@@ -11,6 +11,7 @@ import BuiltBy from "../components/BuiltBy";
 import NavBar from "../components/NavBar";
 import { seats } from "../constant";
 import Image from "next/image";
+import SEOHead from "@/components/SEOHead";
 
 export const getStaticProps: GetStaticProps<{
   seat: (typeof seats)[number];
@@ -36,8 +37,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 function SeatPage({
   seat,
 }: InferGetServerSidePropsType<typeof getStaticProps>) {
+  const title = `Section ${seat.section} (Level ${seat.level}), Stadium Bukit Jalil – BukitJalilStadium.com`;
+  const description = ` A view of Bukit Jalil field from section ${seat.section} of Stadium Bukit Jalil.`;
+
   return (
     <PhotoProvider>
+      <SEOHead
+        title={title}
+        description={description}
+        path={`/${seat.section}`}
+        ogPath="/og.png"
+      />
       <div className="pb-24">
         <NavBar />
         <div className="flex justify-between max-w-screen-lg mx-auto mt-8 px-4">
@@ -47,9 +57,7 @@ function SeatPage({
           >
             <ChevronLeft className="mr-2 h-4 w-4" /> {seat.left}
           </Link>
-          <h1 className="text-lg font-bold text-center md:text-2xl">
-            Section {seat.section} (Level {seat.level})
-          </h1>
+          <h1 className="text-lg font-bold text-center md:text-2xl">{title}</h1>
           <Link
             href={`/${seat.right}`}
             className="flex justify-center items-center rounded-md bg-white/10 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
@@ -58,10 +66,7 @@ function SeatPage({
           </Link>
         </div>
         <div className="flex flex-col items-center max-w-screen-lg mx-auto mt-8 px-4">
-          <p className="text-center">
-            A view of Bukit Jalil field from section {seat.section} of Stadium
-            Bukit Jalil.
-          </p>
+          <p className="text-center">{description}</p>
         </div>
         <div className="flex flex-col md:flex-row space-x-0 space-y-4 md:space-y-0 md:space-x-4 justify-center mt-8 px-4 items-center w-full mx-auto max-w-screen-xl">
           {[...seat.photosUrl].map((item) => (
