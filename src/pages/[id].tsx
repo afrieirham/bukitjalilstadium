@@ -37,13 +37,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 function SeatPage({
   seat,
 }: InferGetServerSidePropsType<typeof getStaticProps>) {
-  const title = `Section ${seat.section} (Level ${seat.level}), Stadium Bukit Jalil – BukitJalilStadium.com`;
+  const title = `Section ${seat.section} (Level ${seat.level})`;
   const description = ` A view of Bukit Jalil field from section ${seat.section} of Stadium Bukit Jalil.`;
 
   return (
     <PhotoProvider>
       <SEOHead
-        title={title}
+        title={title + ", Stadium Bukit Jalil – BukitJalilStadium.com"}
         description={description}
         path={`/${seat.section}`}
         ogPath="/og.png"
