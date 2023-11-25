@@ -5,7 +5,7 @@ function SeatNav({ current }: { current?: string }) {
   return (
     <div className="flex flex-col justify-center items-center my-16 px-4">
       <h2 className="text-md md:text-xl font-bold">Level 3</h2>
-      <div className="flex flex-wrap flex-row mt-2">
+      <div className="flex flex-wrap flex-row mt-2 justify-center">
         {seats
           .filter((seat) => seat.level === 3)
           .map((seat, i) => (
@@ -23,7 +23,7 @@ function SeatNav({ current }: { current?: string }) {
           ))}
       </div>
       <h2 className="text-md md:text-xl font-bold mt-16">Level 2</h2>
-      <div className="flex flex-wrap flex-row mt-2">
+      <div className="flex flex-wrap flex-row mt-2 justify-center">
         {seats
           .filter((seat) => seat.level === 2)
           .map((seat, i) => (
