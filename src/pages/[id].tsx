@@ -46,7 +46,7 @@ function SeatPage({
         title={title + ", Stadium Bukit Jalil – BukitJalilStadium.com"}
         description={description}
         path={`/${seat.section}`}
-        ogPath="/og.png"
+        ogPath={`/seats/${seat.photosUrl[1]}`}
       />
       <div className="pb-24">
         <NavBar />
