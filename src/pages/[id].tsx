@@ -10,6 +10,7 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 import BuiltBy from "../components/BuiltBy";
 import NavBar from "../components/NavBar";
 import { seats } from "../constant";
+import Image from "next/image";
 
 export const getStaticProps: GetStaticProps<{
   seat: (typeof seats)[number];
@@ -37,9 +38,9 @@ function SeatPage({
 }: InferGetServerSidePropsType<typeof getStaticProps>) {
   return (
     <PhotoProvider>
-      <div>
+      <div className="pb-24">
         <NavBar />
-        <div className="flex justify-between max-w-screen-lg mx-auto mt-8">
+        <div className="flex justify-between max-w-screen-lg mx-auto mt-8 px-4">
           <Link
             href={`/${seat.left}`}
             className="flex justify-center items-center rounded-md bg-white/10 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
@@ -56,23 +57,33 @@ function SeatPage({
             {seat.right} <ChevronRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
-        <div className="flex flex-col items-center max-w-screen-lg mx-auto mt-8">
-          <p>
+        <div className="flex flex-col items-center max-w-screen-lg mx-auto mt-8 px-4">
+          <p className="text-center">
             A view of Bukit Jalil field from section {seat.section} of Stadium
             Bukit Jalil.
           </p>
         </div>
-        <div className="flex space-x-4 justify-center mt-8">
-          {seat.photosUrl.map((item) => (
-            <PhotoView key={item} src={`/seats/${item}`}>
-              <img
-                src={`/seats/${item}`}
-                className="w-[400px] h-[400px] object-cover"
-              />
-            </PhotoView>
+        <div className="flex flex-col md:flex-row space-x-0 space-y-4 md:space-y-0 md:space-x-4 justify-center mt-8 px-4 items-center w-full mx-auto max-w-screen-xl">
+          {[...seat.photosUrl].map((item) => (
+            <div className="relative h-[280px] md:h-[400px] w-full">
+              <PhotoView key={item} src={`/seats/${item}`}>
+                <Image
+                  fill
+                  alt=""
+                  src={`/seats/${item}`}
+                  className="w-full h-auto object-cover"
+                />
+              </PhotoView>
+            </div>
           ))}
         </div>
         <SeatNav current={seat.section} />
+        <div className="px-4">
+          <img
+            src="/map.png"
+            className="w-full max-w-screen-md h-auto border mx-auto"
+          />
+        </div>
         <BuiltBy />
       </div>
     </PhotoProvider>
