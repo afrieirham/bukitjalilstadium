@@ -2,6 +2,7 @@ import SeatNav from "@/components/SeatNav";
 import BuiltBy from "../components/BuiltBy";
 import NavBar from "../components/NavBar";
 import SEOHead from "@/components/SEOHead";
+import SectorNav from "@/components/SectorNav";
 
 export default function Home() {
   return (

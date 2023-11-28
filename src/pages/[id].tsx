@@ -12,6 +12,7 @@ import NavBar from "../components/NavBar";
 import { seats } from "../constant";
 import Image from "next/image";
 import SEOHead from "@/components/SEOHead";
+import SectorNav from "@/components/SectorNav";
 
 export const getStaticProps: GetStaticProps<{
   seat: (typeof seats)[number];
