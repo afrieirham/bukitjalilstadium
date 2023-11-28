@@ -50,3 +50,4 @@ Currently, the map supports these features:
 - Roof can also be disabled
 
 However, the styling are a bit off for now, but most of the styling stuff are handled, including responsiveness.
+This map should be scale with the seats info provided.
