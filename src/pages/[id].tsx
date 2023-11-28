@@ -84,10 +84,7 @@ function SeatPage({
         </div>
         <SeatNav current={seat.section} />
         <div className="px-4">
-          <img
-            src="/map.png"
-            className="w-full max-w-screen-md h-auto border mx-auto"
-          />
+          <SectorNav />
         </div>
         <BuiltBy />
       </div>

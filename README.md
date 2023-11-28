@@ -38,3 +38,15 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+---
+
+## Stadium Map Usage
+
+Currently, the map supports these features:
+- Highlighting active sector
+- Enable/disable sectors for disabling interactions
+- Map is accessible-friendly (can be navigated using keyboards and touches)
+- Roof can also be disabled
+
+However, the styling are a bit off for now, but most of the styling stuff are handled, including responsiveness.
