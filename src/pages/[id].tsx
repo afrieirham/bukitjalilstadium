@@ -70,8 +70,8 @@ function SeatPage({
           <p className="text-center">{description}</p>
         </div>
         <div className="flex flex-col md:flex-row space-x-0 space-y-4 md:space-y-0 md:space-x-4 justify-center mt-8 px-4 items-center w-full mx-auto max-w-screen-xl">
-          {[...seat.photosUrl].map((item) => (
-            <div className="relative h-[280px] md:h-[400px] w-full">
+          {seat.photosUrl.map((item) => (
+            <div key={item} className="relative h-[280px] md:h-[400px] w-full">
               <PhotoView key={item} src={`/seats/${item}`}>
                 <Image
                   fill
