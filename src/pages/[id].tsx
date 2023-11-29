@@ -12,6 +12,7 @@ import NavBar from "../components/NavBar";
 import { seats } from "../constant";
 import Image from "next/image";
 import SEOHead from "@/components/SEOHead";
+import SectorNav from "@/components/SectorNav";
 
 export const getStaticProps: GetStaticProps<{
   seat: (typeof seats)[number];
@@ -69,8 +70,8 @@ function SeatPage({
           <p className="text-center">{description}</p>
         </div>
         <div className="flex flex-col md:flex-row space-x-0 space-y-4 md:space-y-0 md:space-x-4 justify-center mt-8 px-4 items-center w-full mx-auto max-w-screen-xl">
-          {[...seat.photosUrl].map((item) => (
-            <div className="relative h-[280px] md:h-[400px] w-full">
+          {seat.photosUrl.map((item) => (
+            <div key={item} className="relative h-[280px] md:h-[400px] w-full">
               <PhotoView key={item} src={`/seats/${item}`}>
                 <Image
                   fill
@@ -84,10 +85,7 @@ function SeatPage({
         </div>
         <SeatNav current={seat.section} />
         <div className="px-4">
-          <img
-            src="/map.png"
-            className="w-full max-w-screen-md h-auto border mx-auto"
-          />
+          <SectorNav />
         </div>
         <BuiltBy />
       </div>

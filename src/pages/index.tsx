@@ -2,6 +2,7 @@ import SeatNav from "@/components/SeatNav";
 import BuiltBy from "../components/BuiltBy";
 import NavBar from "../components/NavBar";
 import SEOHead from "@/components/SEOHead";
+import SectorNav from "@/components/SectorNav";
 
 export default function Home() {
   return (
@@ -17,7 +18,7 @@ export default function Home() {
         <h1 className="mt-8 text-lg font-bold text-center md:text-2xl">
           Stadium Nasional Bukit Jalil Seating View Plan
         </h1>
-        <img src="/map.png" className="w-full max-w-screen-lg h-auto border" />
+        <SectorNav />
       </div>
       <SeatNav />
       <BuiltBy />
