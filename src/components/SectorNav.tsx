@@ -11,7 +11,12 @@ export default function SectorNav() {
 
   return (
     <div className="flex items-center w-full justify-center">
-      <StadiumSectors onSelect={handleSelect} disableRoofSelection enabledSectors={enabledSectors} activeSector={router.query.id as string} />
+      <StadiumSectors
+        onSelect={handleSelect}
+        disableRoofSelection
+        enabledSectors={enabledSectors}
+        activeSector={router.query.id as string}
+      />
     </div>
   );
 }
