@@ -73,8 +73,8 @@ function SeatPage({
           {seat.photosUrl.map((item) => (
             <div key={item} className="relative h-[280px] md:h-[400px] w-full">
               <PhotoView key={item} src={`/seats/${item}`}>
-                <Image
-                  fill
+                <img
+                  // fill
                   alt=""
                   src={`/seats/${item}`}
                   className="w-full h-auto object-cover"
