@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main>
       <SEOHead
-        title="Stadium Bukit Jalil Seating View – BukitJalilStadium.com"
+        title="Stadium Bukit Jalil Seating View | BukitJalilStadium.com"
         description="Field view from seats in each sections inside of the Stadium Nasional Bukit Jalil"
         path="/"
         ogPath="/og.png"
