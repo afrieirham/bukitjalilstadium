@@ -16,7 +16,6 @@ type StadiumSectorsProps = {
 
 export default function StadiumSectors(props: StadiumSectorsProps) {
   const [mouseOver, setMouseOver] = useState<string | null>(null);
-  const {theme} = useTheme();
 
   return (
     <svg
