@@ -49,7 +49,7 @@ function SeatPage({
         path={`/${seat.section}`}
         ogPath={`/seats/${seat.photosUrl[1]}`}
       />
-      <div className="pb-24">
+      <div className="pb-24 dark:bg-[#111111]">
         <NavBar />
         <div className="flex justify-between max-w-screen-lg mx-auto mt-8 px-4">
           <Link
@@ -66,7 +66,7 @@ function SeatPage({
             {seat.right} <ChevronRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
-        <div className="flex flex-col items-center max-w-screen-lg mx-auto mt-8 px-4">
+        <div className="flex flex-col items-center max-w-screen-lg mx-auto pt-8 px-4 ">
           <p className="text-center">{description}</p>
         </div>
         <div className="flex flex-col md:flex-row space-x-0 space-y-4 md:space-y-0 md:space-x-4 justify-center mt-8 px-4 items-center w-full mx-auto max-w-screen-xl">
@@ -85,7 +85,7 @@ function SeatPage({
           ))}
         </div>
         <SeatNav current={seat.section} />
-        <div className="px-4">
+        <div className="px-4 dark:bg-[#111111]">
           <SectorNav />
         </div>
         <BuiltBy />

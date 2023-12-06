@@ -3,7 +3,7 @@ import Link from "next/link";
 
 function SeatNav({ current }: { current?: string }) {
   return (
-    <div className="flex flex-col justify-center items-center my-16 px-4">
+    <div className="flex flex-col justify-center items-center py-16 px-4 dark:bg-[#111111]">
       <h2 className="text-md md:text-xl font-bold">Level 3</h2>
       <div className="flex flex-wrap flex-row mt-2 justify-center">
         {seats
