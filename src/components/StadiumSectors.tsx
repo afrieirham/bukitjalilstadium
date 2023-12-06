@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { Sector, sectors } from "../config/sectors";
 import { useTheme } from "next-themes";
@@ -15,7 +16,6 @@ type StadiumSectorsProps = {
 
 export default function StadiumSectors(props: StadiumSectorsProps) {
   const [mouseOver, setMouseOver] = useState<string | null>(null);
-  const {theme} = useTheme();
 
   return (
     <svg
@@ -24,25 +24,25 @@ export default function StadiumSectors(props: StadiumSectorsProps) {
       viewBox="0 0 2139 1750"
       className="w-[800px] h-auto"
     >
-      <text fill={theme === "dark" ? "white" : "black"} fontSize={64} x={380} y={120}>
+      <text fontSize={64} x={380} y={120} className="dark:invert">
         E
       </text>
-      <text fill={theme === "dark" ? "white" : "black"} className="light:text-black" fontSize={64} x={0} y={880}>
+      <text fontSize={64} x={0} y={880} className="dark:invert">
         D
       </text>
-      <text fill={theme === "dark" ? "white" : "black"} className="light:text-black" fontSize={64} x={1062} y={1800}>
+      <text fontSize={64} x={1062} y={1800} className="dark:invert">
         C
       </text>
-      <text fill={theme === "dark" ? "white" : "black"} className="light:text-black" fontSize={64} x={2090} y={880}>
+      <text fontSize={64} x={2090} y={880} className="dark:invert">
         B
       </text>
-      <text fill={theme === "dark" ? "white" : "black"} className="light:text-black" fontSize={64} x={1700} y={120}>
+      <text fontSize={64} x={1700} y={120} className="dark:invert">
         A
       </text>
-      <text fill={theme === "dark" ? "white" : "black"} fontSize={56} x={1700} y={0}>
+      <text fontSize={56} x={1700} y={0} className="dark:invert">
         🚅 LRT Station ▶
       </text>
-      <text fill="white" fontSize={96} x={1000} y={900}>
+      <text fontSize={96} x={1000} y={900} className="dark:invert">
         {mouseOver}
       </text>
       {sectors.map(({ className, ...sectorProps }) => {
