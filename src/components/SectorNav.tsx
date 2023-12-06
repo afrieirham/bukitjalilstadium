@@ -1,3 +1,4 @@
+"use client";
 import { seats } from "@/constant";
 import StadiumSectors from "./StadiumSectors";
 import { useRouter as useNavigation } from "next/navigation";
