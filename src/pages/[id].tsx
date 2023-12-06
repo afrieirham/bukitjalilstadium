@@ -54,14 +54,14 @@ function SeatPage({
         <div className="flex justify-between max-w-screen-lg mx-auto mt-8 px-4">
           <Link
             href={`/${seat.left}`}
-            className="flex justify-center items-center rounded-md bg-white/10 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
+            className="dark:bg-black/10 flex justify-center items-center rounded-md bg-black px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
           >
             <ChevronLeft className="mr-2 h-4 w-4" /> {seat.left}
           </Link>
           <h1 className="text-lg font-bold text-center md:text-2xl">{title}</h1>
           <Link
             href={`/${seat.right}`}
-            className="flex justify-center items-center rounded-md bg-white/10 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
+            className="dark:bg-black/10 flex justify-center items-center rounded-md bg-black px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
           >
             {seat.right} <ChevronRight className="ml-2 h-4 w-4" />
           </Link>
