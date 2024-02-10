@@ -1,12 +1,14 @@
 import { seats } from "@/constant";
 import StadiumSectors from "./StadiumSectors";
+import { useRouter as useNavigation } from "next/navigation";
 import { useRouter } from "next/router";
 
 export default function SectorNav() {
   const router = useRouter();
+  const navigation = useNavigation();
   const enabledSectors = seats.map((seat) => seat.section);
   const handleSelect = (sector: { id: string }) => {
-    router.push(`/${sector.id}`);
+    navigation.push(`/${sector.id}`, { scroll: false });
   };
 
   return (

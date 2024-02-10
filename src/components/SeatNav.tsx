@@ -11,6 +11,7 @@ function SeatNav({ current }: { current?: string }) {
           .map((seat, i) => (
             <div key={seat.section}>
               <Link
+                scroll={false}
                 href={`/${seat.section}`}
                 className={`hover:underline mx-2 ${
                   current === seat.section ? "text-zinc-500" : ""
@@ -29,6 +30,7 @@ function SeatNav({ current }: { current?: string }) {
           .map((seat, i) => (
             <div key={seat.section}>
               <Link
+                scroll={false}
                 href={`/${seat.section}`}
                 className={`hover:underline mx-2 ${
                   current === seat.section ? "text-zinc-500" : ""
