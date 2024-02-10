@@ -36,7 +36,7 @@ function SEOHead({
       />
 
       {/* <!-- Twitter Meta Tags --> */}
-      <meta name="twitter:site" content="@afrieirham" />
+      <meta name="twitter:creator" content="@afrieirham_" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta property="twitter:domain" content="bukitjalilstadium.com" />
       <meta
