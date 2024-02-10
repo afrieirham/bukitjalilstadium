@@ -70,26 +70,19 @@ function SeatPage({
           <p className="text-center">{description}</p>
         </div>
         <div className="flex flex-col md:flex-row space-x-0 space-y-4 md:space-y-0 md:space-x-4 justify-center mt-8 px-4 items-center w-full mx-auto max-w-screen-xl">
-          {seat.photosUrl.map((item) => {
-            const altText = `${title}-${item.replace(".jpg", "")}`;
-            return (
-              <div
-                key={item}
-                className="relative h-[280px] md:h-[400px] w-full"
-              >
-                <PhotoView key={item} src={`/seats/${item}`}>
-                  <Image
-                    fill
-                    priority
-                    alt={altText}
-                    title={altText}
-                    src={`/seats/${item}`}
-                    className="w-full h-auto object-cover"
-                  />
-                </PhotoView>
-              </div>
-            );
-          })}
+          {seat.photosUrl.map((item, idx) => (
+            <div key={item} className="relative h-[280px] md:h-[400px] w-full">
+              <PhotoView key={item} src={`/seats/${item}`}>
+                <Image
+                  fill
+                  priority
+                  alt={`${idx === 0 ? "1x" : "0.5x"} ${description}`}
+                  src={`/seats/${item}`}
+                  className="w-full h-auto object-cover"
+                />
+              </PhotoView>
+            </div>
+          ))}
         </div>
         <SeatNav current={seat.section} />
         <div className="px-4">
