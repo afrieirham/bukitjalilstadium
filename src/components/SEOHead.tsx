@@ -15,6 +15,9 @@ function SEOHead({
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
+      <meta name="robots" content="index,follow" />
+      <link rel="canonical" href="https://bukitjalilstadium.com" />
+
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="icon" href="/favicon.ico" />
 
@@ -33,6 +36,7 @@ function SEOHead({
       />
 
       {/* <!-- Twitter Meta Tags --> */}
+      <meta name="twitter:creator" content="@afrieirham_" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta property="twitter:domain" content="bukitjalilstadium.com" />
       <meta
