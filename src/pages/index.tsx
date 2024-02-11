@@ -3,7 +3,6 @@ import BuiltBy from "../components/BuiltBy";
 import NavBar from "../components/NavBar";
 import SEOHead from "@/components/SEOHead";
 import SectorNav from "@/components/SectorNav";
-import { ThemeProvider } from "@/components/theme-provider";
 
 export default function Home() {
   return (

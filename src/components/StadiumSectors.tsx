@@ -24,25 +24,25 @@ export default function StadiumSectors(props: StadiumSectorsProps) {
       viewBox="0 0 2139 1750"
       className="w-[800px] h-auto"
     >
-      <text fontSize={64} x={380} y={120} className="dark:invert">
+      <text fontSize={64} x={380} y={120}>
         E
       </text>
-      <text fontSize={64} x={0} y={880} className="dark:invert">
+      <text fontSize={64} x={0} y={880}>
         D
       </text>
-      <text fontSize={64} x={1062} y={1800} className="dark:invert">
+      <text fontSize={64} x={1062} y={1800}>
         C
       </text>
-      <text fontSize={64} x={2090} y={880} className="dark:invert">
+      <text fontSize={64} x={2090} y={880}>
         B
       </text>
-      <text fontSize={64} x={1700} y={120} className="dark:invert">
+      <text fontSize={64} x={1700} y={120}>
         A
       </text>
-      <text fontSize={56} x={1700} y={0} className="dark:invert">
+      <text fontSize={56} x={1700} y={0}>
         🚅 LRT Station ▶
       </text>
-      <text fontSize={96} x={1000} y={900} className="dark:invert">
+      <text fontSize={96} x={1000} y={900}>
         {mouseOver}
       </text>
       {sectors.map(({ className, ...sectorProps }) => {
