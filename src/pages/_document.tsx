@@ -9,6 +9,7 @@ export default function Document() {
           data-token="52a61c07-85f9-440d-b47b-e9d0764e3c43"
           async
         />
+        <meta name="google-adsense-account" content="ca-pub-5654598090665312" />
       </Head>
       <body>
         <Main />
