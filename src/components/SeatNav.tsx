@@ -1,7 +1,10 @@
-import { seats } from "@/constant";
 import Link from "next/link";
 
+import { seats } from "@/constant";
+import useRedirectPopunder from "@/hooks/useRedirectPopunder";
+
 function SeatNav({ current }: { current?: string }) {
+  const { onOpenPopunder } = useRedirectPopunder();
   return (
     <div className="flex flex-col justify-center items-center my-16 px-4">
       <h2 className="text-md md:text-xl font-bold">Level 3</h2>
@@ -13,6 +16,7 @@ function SeatNav({ current }: { current?: string }) {
               <Link
                 scroll={false}
                 href={`/${seat.section}`}
+                onClick={() => onOpenPopunder()}
                 className={`hover:underline mx-2 ${
                   current === seat.section ? "text-zinc-500" : ""
                 }`}
@@ -32,6 +36,7 @@ function SeatNav({ current }: { current?: string }) {
               <Link
                 scroll={false}
                 href={`/${seat.section}`}
+                onClick={() => onOpenPopunder()}
                 className={`hover:underline mx-2 ${
                   current === seat.section ? "text-zinc-500" : ""
                 }`}

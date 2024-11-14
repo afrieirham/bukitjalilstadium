@@ -1,18 +1,23 @@
-import SeatNav from "@/components/SeatNav";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   GetStaticPaths,
   GetStaticProps,
   InferGetServerSidePropsType,
 } from "next";
+import Image from "next/image";
 import Link from "next/link";
+
 import { PhotoProvider, PhotoView } from "react-photo-view";
+
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+import SEOHead from "@/components/SEOHead";
+import SeatNav from "@/components/SeatNav";
+import SectorNav from "@/components/SectorNav";
+import useRedirectPopunder from "@/hooks/useRedirectPopunder";
+
 import BuiltBy from "../components/BuiltBy";
 import NavBar from "../components/NavBar";
 import { seats } from "../constant";
-import Image from "next/image";
-import SEOHead from "@/components/SEOHead";
-import SectorNav from "@/components/SectorNav";
 
 export const getStaticProps: GetStaticProps<{
   seat: (typeof seats)[number];
@@ -38,6 +43,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 function SeatPage({
   seat,
 }: InferGetServerSidePropsType<typeof getStaticProps>) {
+  const { onOpenPopunder } = useRedirectPopunder();
   const title = `Section ${seat.section} (Level ${seat.level})`;
   const description = `View of Bukit Jalil field from section ${seat.section} of Stadium Bukit Jalil.`;
 
@@ -54,6 +60,7 @@ function SeatPage({
         <div className="flex justify-between max-w-screen-lg mx-auto mt-8 px-4">
           <Link
             href={`/${seat.left}`}
+            onClick={() => onOpenPopunder()}
             className="flex justify-center items-center rounded-md bg-white/10 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
           >
             <ChevronLeft className="mr-2 h-4 w-4" /> {seat.left}
@@ -61,6 +68,7 @@ function SeatPage({
           <h1 className="text-lg font-bold text-center md:text-2xl">{title}</h1>
           <Link
             href={`/${seat.right}`}
+            onClick={() => onOpenPopunder()}
             className="flex justify-center items-center rounded-md bg-white/10 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
           >
             {seat.right} <ChevronRight className="ml-2 h-4 w-4" />
