@@ -83,7 +83,7 @@ function SeatPage({
               <PhotoView key={item} src={`/seats/${item}`}>
                 <img
                   alt={`${idx === 0 ? "1x" : "0.5x"} ${description}`}
-                  src={`/seats/${item}`}
+                  src={`https://storage.bukitjalilstadium.com/seats/${item}`}
                   className="w-full h-auto object-cover"
                 />
               </PhotoView>
