@@ -81,9 +81,7 @@ function SeatPage({
           {seat.photosUrl.map((item, idx) => (
             <div key={item} className="relative h-[280px] md:h-[400px] w-full">
               <PhotoView key={item} src={`/seats/${item}`}>
-                <Image
-                  fill
-                  priority
+                <img
                   alt={`${idx === 0 ? "1x" : "0.5x"} ${description}`}
                   src={`/seats/${item}`}
                   className="w-full h-auto object-cover"
@@ -92,7 +90,9 @@ function SeatPage({
             </div>
           ))}
         </div>
-        <SeatNav current={seat.section} />
+        <div className="py-10">
+          <SeatNav current={seat.section} />
+        </div>
         <div className="px-4">
           <SectorNav />
         </div>
