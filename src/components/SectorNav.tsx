@@ -12,7 +12,7 @@ export default function SectorNav() {
   const enabledSectors = seats.map((seat) => seat.section);
   const handleSelect = (sector: { id: string }) => {
     onOpenPopunder();
-    navigation.push(`/${sector.id}`, { scroll: false });
+    navigation.push(`/${sector.id.replaceAll("/", "-")}`, { scroll: false });
   };
 
   return (

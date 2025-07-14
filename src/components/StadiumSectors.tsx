@@ -44,7 +44,6 @@ export default function StadiumSectors(props: StadiumSectorsProps) {
         {mouseOver}
       </text>
       {sectors.map(({ className, ...sectorProps }) => {
-        const isEnabled = props.enabledSectors?.includes(sectorProps.id);
         const isRoof = sectorProps.id.startsWith("roof");
 
         const handleClick = (
@@ -53,7 +52,6 @@ export default function StadiumSectors(props: StadiumSectorsProps) {
         ) => {
           e.preventDefault();
           if (props.disableRoofSelection && isRoof) return;
-          if (!isEnabled) return;
           props.onSelect?.({
             id: sector.id,
             capacity: sector.capacity,
@@ -62,7 +60,6 @@ export default function StadiumSectors(props: StadiumSectorsProps) {
 
         const handleHover = (sector: Omit<Sector, "className">) => {
           if (props.disableRoofSelection && isRoof) return;
-          if (!isEnabled) return;
           props.onHover?.({
             id: sector.id,
             capacity: sector.capacity,
@@ -71,7 +68,6 @@ export default function StadiumSectors(props: StadiumSectorsProps) {
 
         const handleMouseOver = (sector: Omit<Sector, "className">) => {
           if (props.disableRoofSelection && isRoof) return;
-          if (!isEnabled) return;
           setMouseOver(sector.id);
         };
 
@@ -79,17 +75,19 @@ export default function StadiumSectors(props: StadiumSectorsProps) {
           <a
             key={sectorProps.id}
             id={sectorProps.id}
-            href={isEnabled ? sectorProps.id : undefined}
-            className={isEnabled ? "cursor-pointer" : "cursor-not-allowed"}
+            href={sectorProps.id.replaceAll("/", "-")}
+            className="cursor-pointer"
             onClick={(e) => handleClick(e, sectorProps)}
             onMouseOver={() => handleHover(sectorProps)}
             onMouseEnter={() => handleMouseOver(sectorProps)}
             onMouseLeave={() => setMouseOver(null)}
           >
             <path
-              data-disabled={!isEnabled}
-              data-active={props.activeSector === sectorProps.id}
-              className="hover:fill-[#444] data-[disabled=true]:fill-[#333] data-[active=true]:fill-yellow-300"
+              data-roof={isRoof}
+              data-active={
+                props.activeSector === sectorProps.id.replaceAll("/", "-")
+              }
+              className="hover:fill-gray-500 data-[roof=true]:fill-gray-800 data-[active=true]:fill-yellow-500"
               {...sectorProps}
             />
           </a>
