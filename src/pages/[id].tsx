@@ -105,8 +105,8 @@ function SeatPage({
                   videos to complete this website!
                 </p>
                 <div className="mt-4">
-                  <a
-                    href={`https://go.afrieirham.com/contribute?seat=${seat.section.replaceAll(
+                  <Link
+                    href={`/contribute?seat=${seat.section.replaceAll(
                       "-",
                       "/"
                     )}`}
@@ -114,7 +114,7 @@ function SeatPage({
                     className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive bg-black text-white shadow-xs hover:bg-primary/90 h-9 px-4 py-2"
                   >
                     Share my photo
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
