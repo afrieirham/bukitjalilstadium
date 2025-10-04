@@ -5,11 +5,6 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <script
-          src="https://beamanalytics.b-cdn.net/beam.min.js"
-          data-token={process.env.NEXT_PUBLIC_BEAM_ANALYTICS_DATA_TOKEN}
-          async
-        />
-        <script
           defer
           src="https://analytics.afrieirham.com/script.js"
           data-website-id="ccdf97db-6c20-4e02-8ab5-4cb945f6a4bb"
