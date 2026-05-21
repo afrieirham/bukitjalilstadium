@@ -81,9 +81,12 @@ function SeatPage({
         <div className="flex flex-col md:flex-row space-x-0 space-y-4 md:space-y-0 md:space-x-4 justify-center mt-8 px-4 items-center w-full mx-auto max-w-screen-xl">
           {seat.photosUrl.length > 0 ? (
             <>
-              <div className="flex h-full w-full justify-center gap-4">
+              <div className="flex flex-col md:flex-row h-full w-full justify-center gap-4">
                 {seat.photosUrl.map((item, idx) => (
-                  <div key={item} className="relative h-[480px] w-[600px]">
+                  <div
+                    key={item}
+                    className="relative h-[240px] w-full md:h-[480px] md:w-[600px]"
+                  >
                     <PhotoView
                       key={item}
                       src={`https://storage.bukitjalilstadium.com/seats/${item}`}
@@ -99,7 +102,7 @@ function SeatPage({
                 ))}
               </div>
               {seat.photosUrl.length === 1 && (
-                <div className="flex items-center justify-center h-[480px] w-full bg-white text-black">
+                <div className="flex items-center justify-center h-[240px] md:h-[480px] w-full bg-white text-black">
                   <div className="flex flex-col p-4">
                     <p className="text-lg">Almost there!</p>
                     <p className="text-sm text-gray-500 mt-2">
