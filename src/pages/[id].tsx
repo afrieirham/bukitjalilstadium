@@ -148,6 +148,18 @@ function SeatPage({
             </div>
           )}
         </div>
+        {seat.photosUrl.length === 2 && (
+          <div className="items-center justify-center flex mt-4">
+            <Link
+              href={`/contribute?seat=${seat.section.replaceAll("-", "/")}`}
+              target="_blank"
+              className="text-xs hover:underline text-gray-500"
+            >
+              Got a better photo? Share with us!
+            </Link>
+          </div>
+        )}
+
         <div className="py-10">
           <SeatNav current={seat.section} />
         </div>
