@@ -1,4 +1,4 @@
-import {
+import type {
   GetStaticPaths,
   GetStaticProps,
   InferGetServerSidePropsType,
@@ -58,7 +58,8 @@ function SeatPage({
       />
       <div className="pb-24">
         <NavBar />
-        <div className="flex justify-between max-w-screen-lg mx-auto mt-8 px-4">
+
+        <div className="hidden md:flex justify-between max-w-screen-lg mx-auto mt-8 px-4">
           <Link
             href={`/${seat.left.replaceAll("/", "-")}`}
             onClick={() => onOpenPopunder()}
@@ -75,7 +76,28 @@ function SeatPage({
             {seat.right} <ChevronRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
-        <div className="flex flex-col items-center max-w-screen-lg mx-auto mt-8 px-4">
+
+        <div className="block md:hidden mt-4 space-y-8">
+          <div className="flex justify-between gap-4 max-w-screen-lg mx-auto px-4">
+            <Link
+              href={`/${seat.left.replaceAll("/", "-")}`}
+              onClick={() => onOpenPopunder()}
+              className="flex justify-center items-center rounded-md bg-white/10 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white/20 w-full"
+            >
+              <ChevronLeft className="mr-2 h-4 w-4" /> {seat.left}
+            </Link>
+            <Link
+              href={`/${seat.right.replaceAll("/", "-")}`}
+              onClick={() => onOpenPopunder()}
+              className="flex justify-center items-center rounded-md bg-white/10 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white/20 w-full"
+            >
+              {seat.right} <ChevronRight className="ml-2 h-4 w-4" />
+            </Link>
+          </div>
+          <h1 className="text-lg font-bold text-center md:text-2xl">{title}</h1>
+        </div>
+
+        <div className="flex flex-col items-center max-w-screen-lg mx-auto mt-4 px-4">
           <p className="text-center">{description}</p>
         </div>
         <div className="flex flex-col md:flex-row space-x-0 space-y-4 md:space-y-0 md:space-x-4 justify-center mt-8 px-4 items-center w-full mx-auto max-w-screen-xl">
@@ -126,7 +148,7 @@ function SeatPage({
               )}
             </>
           ) : (
-            <div className="flex items-center justify-center h-[400px] w-full bg-white text-black">
+            <div className="flex items-center justify-center h-[480px] w-full bg-white text-black">
               <div className="flex flex-col p-4">
                 <p className="text-lg">
                   Sorry, no photo available for this section.
