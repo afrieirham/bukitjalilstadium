@@ -80,20 +80,23 @@ function SeatPage({
         </div>
         <div className="flex flex-col md:flex-row space-x-0 space-y-4 md:space-y-0 md:space-x-4 justify-center mt-8 px-4 items-center w-full mx-auto max-w-screen-xl">
           {seat.photosUrl.length > 0 ? (
-            seat.photosUrl.map((item, idx) => (
-              <div
-                key={item}
-                className="relative h-[280px] md:h-[400px] w-full"
-              >
-                <PhotoView key={item} src={`/seats/${item}`}>
-                  <img
-                    alt={`${idx === 0 ? "1x" : "0.5x"} ${description}`}
+            <div className="flex h-full w-full justify-center gap-4">
+              {seat.photosUrl.map((item, idx) => (
+                <div key={item} className="relative h-[480px] w-[600px]">
+                  <PhotoView
+                    key={item}
                     src={`https://storage.bukitjalilstadium.com/seats/${item}`}
-                    className="w-full h-auto object-cover"
-                  />
-                </PhotoView>
-              </div>
-            ))
+                  >
+                    {/** biome-ignore lint/performance/noImgElement: <intentional> */}
+                    <img
+                      alt={`${idx === 0 ? "1x" : "0.5x"} ${description}`}
+                      src={`https://storage.bukitjalilstadium.com/seats/${item}`}
+                      className="w-full object-cover h-full"
+                    />
+                  </PhotoView>
+                </div>
+              ))}
+            </div>
           ) : (
             <div className="flex items-center justify-center h-[400px] w-full bg-white text-black">
               <div className="flex flex-col p-4">
@@ -108,7 +111,7 @@ function SeatPage({
                   <Link
                     href={`/contribute?seat=${seat.section.replaceAll(
                       "-",
-                      "/"
+                      "/",
                     )}`}
                     target="_blank"
                     className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive bg-black text-white shadow-xs hover:bg-primary/90 h-9 px-4 py-2"
