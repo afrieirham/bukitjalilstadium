@@ -32,7 +32,7 @@ export const seats = [
     level: 1,
     right: "104",
     left: "106",
-    photosUrl: [],
+    photosUrl: ["C-105-1.jpg", "C-105-2.jpg"],
   },
   {
     section: "106",
@@ -53,7 +53,7 @@ export const seats = [
     level: 1,
     right: "107",
     left: "109",
-    photosUrl: [],
+    photosUrl: ["C-108-1.jpg"],
   },
   {
     section: "109",
@@ -74,7 +74,7 @@ export const seats = [
     level: 1,
     right: "110",
     left: "112",
-    photosUrl: [],
+    photosUrl: ["C-111-1.jpeg"],
   },
   {
     section: "112",
@@ -102,7 +102,7 @@ export const seats = [
     level: 1,
     right: "114",
     left: "116",
-    photosUrl: [],
+    photosUrl: ["C-115-1.jpeg"],
   },
   {
     section: "116",
@@ -116,7 +116,7 @@ export const seats = [
     level: 1,
     right: "116",
     left: "118",
-    photosUrl: [],
+    photosUrl: ["C-117-1.jpg", "C-117-2.jpg"],
   },
   {
     section: "118",
@@ -158,14 +158,14 @@ export const seats = [
     level: 1,
     right: "122",
     left: "124",
-    photosUrl: [],
+    photosUrl: ["C-123-2.jpg", "C-123-3.jpg"],
   },
   {
     section: "124",
     level: 1,
     right: "123",
     left: "125",
-    photosUrl: [],
+    photosUrl: ["C-124-1.jpg", "C-124-2.jpg"],
   },
   {
     section: "125",
@@ -200,7 +200,7 @@ export const seats = [
     level: 1,
     right: "128",
     left: "130",
-    photosUrl: [],
+    photosUrl: ["C-129-1.jpg"],
   },
   {
     section: "130",
@@ -263,14 +263,14 @@ export const seats = [
     level: 2,
     right: "202",
     left: "204",
-    photosUrl: [],
+    photosUrl: ["C-203-1.jpeg"],
   },
   {
     section: "204",
     level: 2,
     right: "203",
     left: "205",
-    photosUrl: [],
+    photosUrl: ["C-204-1.jpeg"],
   },
   {
     section: "205",
@@ -312,7 +312,7 @@ export const seats = [
     level: 2,
     right: "209",
     left: "211",
-    photosUrl: [],
+    photosUrl: ["C-210-1.jpeg", "C-210-2.jpeg"],
   },
   {
     section: "211",
@@ -326,7 +326,7 @@ export const seats = [
     level: 2,
     right: "211",
     left: "213",
-    photosUrl: [],
+    photosUrl: ["C-212AB-1.jpg"],
   },
   {
     section: "213",
@@ -522,7 +522,7 @@ export const seats = [
     level: 3,
     right: "305",
     left: "307",
-    photosUrl: [],
+    photosUrl: ["C-306-1.jpeg", "C-306-2.jpeg"],
   },
   {
     section: "307",
