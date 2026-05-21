@@ -9,6 +9,10 @@ function NavBar() {
           Contribute
         </Link>
         <p>/</p>
+        <Link href="/contributors" className="hover:underline">
+          Contributors
+        </Link>
+        <p>/</p>
         <p className="hidden sm:block">Stadium Bukit Jalil Seating View</p>
       </div>
     </nav>
