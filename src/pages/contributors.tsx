@@ -10,6 +10,7 @@ const contributors = [
     seat: "105",
     href: "https://www.instagram.com/azrulazizul97/",
   },
+  { name: "Emily Yeo", seat: "104" },
   { name: "Nazira-Saidatina diva", seat: "108" },
   {
     name: "ladyroseisme ",
@@ -27,6 +28,7 @@ const contributors = [
   { name: "Daniel", seat: "212A-B" },
   { name: "iqq", seat: "306", href: "https://www.tiktok.com/@iqq" },
   { name: "Era R.", seat: "312" },
+  { name: "Sarah", seat: "314" },
   { name: "Ethan", seat: "333" },
 ];
 function Contributors() {

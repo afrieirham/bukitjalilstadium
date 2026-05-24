@@ -25,7 +25,7 @@ export const seats = [
     level: 1,
     right: "103",
     left: "105",
-    photosUrl: [],
+    photosUrl: ["C-104-1.jpg"],
   },
   {
     section: "105",
@@ -578,7 +578,7 @@ export const seats = [
     level: 3,
     right: "313",
     left: "315",
-    photosUrl: [],
+    photosUrl: ["C-314-1.jpeg", "C-314-2.jpeg"],
   },
   {
     section: "315",
