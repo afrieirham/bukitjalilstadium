@@ -11,6 +11,10 @@ function NavBar() {
         </span>
       </Link>
       <div className="flex items-center gap-2">
+        <Link href="https://homestay.bukitjalilstadium.com" className="hover:underline">
+          Nearby Homestays
+        </Link>
+        <p>/</p>
         <Link href="/contribute" className="hover:underline">
           Contribute
         </Link>
