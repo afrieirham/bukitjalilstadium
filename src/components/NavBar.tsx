@@ -11,8 +11,8 @@ function NavBar() {
         </span>
       </Link>
       <div className="flex items-center gap-2">
-        <Link href="https://homestay.bukitjalilstadium.com" className="hover:underline">
-          Nearby Homestays
+        <Link href="https://homestay.bukitjalilstadium.com/why-advertise" className="hover:underline">
+          Advertise with us
         </Link>
         <p>/</p>
         <Link href="/contribute" className="hover:underline">
