@@ -25,13 +25,15 @@ function NavBar() {
       <div className="flex items-center justify-center gap-2 mt-8">
         <Link
           href="https://tally.so/r/obQDqP"
-          className="flex items-center gap-2 bg-white px-2 hover:bg-white/90 py-1 rounded"
+          className="flex items-center gap-2 bg-white px-2 hover:bg-white/90 py-1 rounded-md"
         >
           <div className="relative h-2 w-2">
             <div className="absolute top-0 bottom-0 h-2 w-2 rounded-full bg-emerald-500" />
             <div className="absolute top-0 bottom-0 h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
           </div>
-          <span className="text-xs text-black">Looking for homestay?</span>
+          <span className="text-sm text-black">
+            Looking for homestay? Let us help
+          </span>
         </Link>
       </div>
     </>
