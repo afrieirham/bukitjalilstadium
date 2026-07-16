@@ -4,8 +4,10 @@ import type {
   InferGetServerSidePropsType,
 } from "next";
 import Link from "next/link";
+import { useEffect } from "react";
 
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import posthog from "posthog-js";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -48,6 +50,14 @@ function SeatPage({
   const title = `Section ${seat.section} (Level ${seat.level})`;
   const description = `View of Bukit Jalil field from section ${seat.section} of Stadium Bukit Jalil.`;
 
+  useEffect(() => {
+    posthog.capture("seat_section_viewed", {
+      section: seat.section,
+      level: seat.level,
+      has_photos: seat.photosUrl.length > 0,
+    });
+  }, [seat.section]);
+
   return (
     <PhotoProvider>
       <SEOHead
@@ -62,7 +72,10 @@ function SeatPage({
         <div className="hidden md:flex justify-between max-w-screen-lg mx-auto mt-8 px-4">
           <Link
             href={`/${seat.left.replaceAll("/", "-")}`}
-            onClick={() => onOpenPopunder()}
+            onClick={() => {
+              onOpenPopunder();
+              posthog.capture("seat_navigation_clicked", { direction: "left", from_section: seat.section, to_section: seat.left });
+            }}
             className="flex justify-center items-center rounded-md bg-white/10 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
           >
             <ChevronLeft className="mr-2 h-4 w-4" /> {seat.left}
@@ -70,7 +83,10 @@ function SeatPage({
           <h1 className="text-lg font-bold text-center md:text-2xl">{title}</h1>
           <Link
             href={`/${seat.right.replaceAll("/", "-")}`}
-            onClick={() => onOpenPopunder()}
+            onClick={() => {
+              onOpenPopunder();
+              posthog.capture("seat_navigation_clicked", { direction: "right", from_section: seat.section, to_section: seat.right });
+            }}
             className="flex justify-center items-center rounded-md bg-white/10 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
           >
             {seat.right} <ChevronRight className="ml-2 h-4 w-4" />
@@ -81,14 +97,20 @@ function SeatPage({
           <div className="flex justify-between gap-4 max-w-screen-lg mx-auto px-4">
             <Link
               href={`/${seat.left.replaceAll("/", "-")}`}
-              onClick={() => onOpenPopunder()}
+              onClick={() => {
+                onOpenPopunder();
+                posthog.capture("seat_navigation_clicked", { direction: "left", from_section: seat.section, to_section: seat.left });
+              }}
               className="flex justify-center items-center rounded-md bg-white/10 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white/20 w-full"
             >
               <ChevronLeft className="mr-2 h-4 w-4" /> {seat.left}
             </Link>
             <Link
               href={`/${seat.right.replaceAll("/", "-")}`}
-              onClick={() => onOpenPopunder()}
+              onClick={() => {
+                onOpenPopunder();
+                posthog.capture("seat_navigation_clicked", { direction: "right", from_section: seat.section, to_section: seat.right });
+              }}
               className="flex justify-center items-center rounded-md bg-white/10 py-3 text-sm font-semibold text-white shadow-sm hover:bg-white/20 w-full"
             >
               {seat.right} <ChevronRight className="ml-2 h-4 w-4" />
@@ -118,6 +140,7 @@ function SeatPage({
                         alt={`${idx === 0 ? "1x" : "0.5x"} ${description}`}
                         src={`https://storage.bukitjalilstadium.com/seats/${item}`}
                         className="w-full object-cover h-full"
+                        onClick={() => posthog.capture("seat_photo_expanded", { section: seat.section, level: seat.level, photo_index: idx })}
                       />
                     </PhotoView>
                   </div>
@@ -138,6 +161,7 @@ function SeatPage({
                           "/",
                         )}`}
                         target="_blank"
+                        onClick={() => posthog.capture("contribute_clicked", { section: seat.section, level: seat.level, trigger: "one_photo" })}
                         className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive bg-black text-white shadow-xs hover:bg-primary/90 h-9 px-4 py-2"
                       >
                         Share my photo
@@ -164,6 +188,7 @@ function SeatPage({
                       "/",
                     )}`}
                     target="_blank"
+                    onClick={() => posthog.capture("contribute_clicked", { section: seat.section, level: seat.level, trigger: "no_photos" })}
                     className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 aria-invalid:border-destructive bg-black text-white shadow-xs hover:bg-primary/90 h-9 px-4 py-2"
                   >
                     Share my photo
@@ -178,6 +203,7 @@ function SeatPage({
             <Link
               href={`/contribute?seat=${seat.section.replaceAll("-", "/")}`}
               target="_blank"
+              onClick={() => posthog.capture("contribute_clicked", { section: seat.section, level: seat.level, trigger: "better_photo" })}
               className="text-xs hover:underline text-gray-500"
             >
               Got a better photo? Share with us!
