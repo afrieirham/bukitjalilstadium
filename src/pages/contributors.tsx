@@ -2,6 +2,7 @@ import BuiltBy from "@/components/BuiltBy";
 import NavBar from "@/components/NavBar";
 import SEOHead from "@/components/SEOHead";
 import Link from "next/link";
+import posthog from "posthog-js";
 
 const contributors = [
   {
@@ -79,6 +80,7 @@ function Contributors() {
                       href={c.href}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => posthog.capture("contributor_link_clicked", { contributor_seat: c.seat })}
                       className="hover:underline"
                     >
                       {c.name}

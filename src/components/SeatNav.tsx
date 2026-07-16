@@ -1,4 +1,5 @@
 import Link from "next/link";
+import posthog from "posthog-js";
 
 import { seats } from "@/constant";
 import useRedirectPopunder from "@/hooks/useRedirectPopunder";
@@ -16,7 +17,10 @@ function SeatNav({ current }: { current?: string }) {
               <Link
                 scroll={false}
                 href={`/${seat.section.replaceAll("/", "-")}`}
-                onClick={() => onOpenPopunder()}
+                onClick={() => {
+                  onOpenPopunder();
+                  posthog.capture("seat_list_link_clicked", { section: seat.section, level: seat.level });
+                }}
                 className={`hover:underline mx-2 ${
                   current === seat.section ? "text-white" : ""
                 }`}
@@ -36,7 +40,10 @@ function SeatNav({ current }: { current?: string }) {
               <Link
                 scroll={false}
                 href={`/${seat.section.replaceAll("/", "-")}`}
-                onClick={() => onOpenPopunder()}
+                onClick={() => {
+                  onOpenPopunder();
+                  posthog.capture("seat_list_link_clicked", { section: seat.section, level: seat.level });
+                }}
                 className={`hover:underline mx-2 ${
                   current === seat.section ? "text-white" : ""
                 }`}
@@ -56,7 +63,10 @@ function SeatNav({ current }: { current?: string }) {
               <Link
                 scroll={false}
                 href={`/${seat.section.replaceAll("/", "-")}`}
-                onClick={() => onOpenPopunder()}
+                onClick={() => {
+                  onOpenPopunder();
+                  posthog.capture("seat_list_link_clicked", { section: seat.section, level: seat.level });
+                }}
                 className={`hover:underline mx-2 ${
                   current === seat.section ? "text-white" : ""
                 }`}

@@ -1,5 +1,6 @@
 import { useRouter as useNavigation } from "next/navigation";
 import { useRouter } from "next/router";
+import posthog from "posthog-js";
 
 import { seats } from "@/constant";
 import useRedirectPopunder from "@/hooks/useRedirectPopunder";
@@ -12,6 +13,7 @@ export default function SectorNav() {
   const enabledSectors = seats.map((seat) => seat.section);
   const handleSelect = (sector: { id: string }) => {
     onOpenPopunder();
+    posthog.capture("sector_selected", { sector_id: sector.id });
     navigation.push(`/${sector.id.replaceAll("/", "-")}`, { scroll: false });
   };
 
