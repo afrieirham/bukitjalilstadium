@@ -1,6 +1,7 @@
-import SeatPlanPicker from "~/components/widget/seat-plan-picker";
-import type { Route } from "./+types/home";
 import { Button } from "~/components/core/button";
+import SeatPlanPicker from "~/components/widget/seat-plan-picker";
+
+import type { Route } from "./+types/home";
 
 export function meta({}: Route.MetaArgs) {
   return [

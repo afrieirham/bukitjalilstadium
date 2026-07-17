@@ -1,8 +1,10 @@
-import { useGesture } from "@use-gesture/react";
 import { useRef, useState } from "react";
-import { Button } from "~/components/core/button";
-import { HugeiconsIcon } from "@hugeicons/react";
+
 import { Refresh04Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useGesture } from "@use-gesture/react";
+
+import { Button } from "~/components/core/button";
 import { Slider } from "~/components/core/slider";
 import { useIsMobile } from "~/hooks/use-mobile";
 
@@ -33,10 +35,10 @@ function SeatPlanPicker() {
   );
 
   return (
-    <div className="w-full max-w-6xl mx-auto gap-4 grid grid-cols-1 px-4">
-      <div className="relative bg-neutral-50/50 w-full border-border border rounded-md overflow-hidden aspect-square md:aspect-video flex items-center justify-center">
+    <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 px-4">
+      <div className="border-border relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-md border bg-neutral-50/50 md:aspect-video">
         <SeatPlan ref={imageRef} crop={crop} />
-        <div className="absolute bottom-0 md:right-0 flex flex-row md:flex-col items-center gap-2 md:gap-4 w-full md:w-auto max-w-sm p-2 md:p-4">
+        <div className="absolute bottom-0 flex w-full max-w-sm flex-row items-center gap-2 p-2 md:right-0 md:w-auto md:flex-col md:gap-4 md:p-4">
           <Slider
             step={0.01}
             min={1}
@@ -77,7 +79,7 @@ function SeatPlan(props: {
       viewBox="0 0 1475 1200"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="relative w-auto h-full p-6 cursor-move"
+      className="relative h-full w-auto cursor-move p-6"
       style={{
         transform: `scale(${crop.scale}) translate(${crop.x}px, ${crop.y}px)`,
         touchAction: "none",
