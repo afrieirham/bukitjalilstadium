@@ -1,3 +1,4 @@
+import SeatPlanPicker from "~/components/widget/seat-plan-picker";
 import type { Route } from "./+types/home";
 import { Button } from "~/components/core/button";
 
@@ -11,7 +12,7 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
   return (
     <div className="py-8">
-      <Button>hello world</Button>
+      <SeatPlanPicker />
     </div>
   );
 }
