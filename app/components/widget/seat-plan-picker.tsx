@@ -20,14 +20,14 @@ function SeatPlanPicker() {
       onDrag: ({ offset: [dx, dy] }) => {
         setCrop((crop) => ({
           ...crop,
-          x: dx,
-          y: dy,
+          x: dx / crop.scale,
+          y: dy / crop.scale,
         }));
       },
     },
     {
       drag: {
-        from: () => [crop.x, crop.y],
+        from: () => [crop.x * crop.scale, crop.y * crop.scale],
       },
       target: imageRef,
       eventOptions: { passive: false },
@@ -62,6 +62,7 @@ function SeatPlanPicker() {
           </Button>
         </div>
       </div>
+      {JSON.stringify(crop, null, 2)}
     </div>
   );
 }
