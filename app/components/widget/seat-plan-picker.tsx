@@ -33,7 +33,7 @@ function SeatPlanPicker() {
   );
 
   return (
-    <div className="max-w-6xl mx-auto gap-4 grid grid-cols-1 px-4">
+    <div className="w-full max-w-6xl mx-auto gap-4 grid grid-cols-1 px-4">
       <div className="relative bg-neutral-50/50 w-full border-border border rounded-md overflow-hidden aspect-square md:aspect-video flex items-center justify-center">
         <SeatPlan ref={imageRef} crop={crop} />
         <div className="absolute bottom-0 md:right-0 flex flex-row md:flex-col items-center gap-2 md:gap-4 w-full md:w-auto max-w-sm p-2 md:p-4">
@@ -84,7 +84,7 @@ function SeatPlan(props: {
       }}
       ref={ref}
     >
-      <g clip-path="url(#clip0_61_110)">
+      <g clipPath="url(#clip0_61_110)">
         <path
           id="outer-ring"
           d="M1475.21 592.051C1486.65 940.002 1158.26 1211.34 737.071 1199.64C294.615 1209.21 -7.95597e-05 924.041 0 589.923C7.80395e-05 262.189 336.096 -12.3406 740.262 0.428232C1151.87 -5.95619 1464.57 268.574 1475.21 592.051Z"
