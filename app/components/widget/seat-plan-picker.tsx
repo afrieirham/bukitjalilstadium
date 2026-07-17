@@ -24,10 +24,18 @@ function SeatPlanPicker() {
           y: dy / crop.scale,
         }));
       },
+      onPinch: ({ offset: [d] }) => {
+        setCrop((crop) => ({ ...crop, scale: d }));
+      },
     },
     {
       drag: {
         from: () => [crop.x * crop.scale, crop.y * crop.scale],
+      },
+      pinch: {
+        from: () => [crop.scale, 0],
+        scaleBounds: { min: 1, max: 5 },
+        pinchOnWheel: true,
       },
       target: imageRef,
       eventOptions: { passive: false },
@@ -62,7 +70,6 @@ function SeatPlanPicker() {
           </Button>
         </div>
       </div>
-      {JSON.stringify(crop, null, 2)}
     </div>
   );
 }
