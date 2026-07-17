@@ -1,9 +1,6 @@
-import { Button } from "~/components/core/button";
 import SeatPlanPicker from "~/components/widget/seat-plan-picker";
 
-import type { Route } from "./+types/home";
-
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
     { title: "New React Router App" },
     { name: "description", content: "Welcome to React Router!" },
