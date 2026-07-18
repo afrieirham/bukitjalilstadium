@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Refresh04Icon } from "@hugeicons/core-free-icons";
+import {
+  CollapseIcon,
+  ExpandIcon,
+  Refresh04Icon,
+} from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useGesture } from "@use-gesture/react";
 
 import { Button } from "~/components/core/button";
 import { Slider } from "~/components/core/slider";
 import { useIsMobile } from "~/hooks/use-mobile";
+import { cn } from "~/lib/utils";
 
 const initialState = { x: 0, y: 0, scale: 1 };
 const minScale = 1;
@@ -47,6 +52,7 @@ function SeatPlanPicker() {
   const [dragging, setDragging] = useState(false);
   const [pinching, setPinching] = useState(false);
   const [sliding, setSliding] = useState(false);
+  const [fullScreen, setFullScreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef(null);
   const isMobile = useIsMobile();
@@ -107,10 +113,20 @@ function SeatPlanPicker() {
   );
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 px-4">
+    <div
+      className={cn(
+        "mx-auto grid w-full grid-cols-1 gap-4 px-4",
+        fullScreen && "absolute top-0 z-10 h-dvh w-dvw p-0",
+        !fullScreen && "max-w-6xl",
+      )}
+    >
       <div
         ref={containerRef}
-        className="border-border relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-md border bg-neutral-50/50 md:aspect-video"
+        className={cn(
+          "relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-md bg-neutral-50 md:aspect-video",
+          fullScreen && "h-full",
+          !fullScreen && "border-border border",
+        )}
       >
         <SeatPlan
           ref={imageRef}
@@ -118,7 +134,7 @@ function SeatPlanPicker() {
           gesturing={dragging || pinching || sliding}
         />
         <div
-          className="absolute bottom-0 flex w-full max-w-sm flex-row items-center gap-2 p-2 md:right-0 md:w-auto md:flex-col md:gap-4 md:p-4"
+          className="absolute bottom-0 flex w-full max-w-sm flex-row items-center gap-2 p-2 md:right-0 md:w-auto md:flex-col md:p-4"
           onPointerDown={() => setSliding(true)}
           onPointerUp={() => setSliding(false)}
           onPointerCancel={() => setSliding(false)}
@@ -144,6 +160,15 @@ function SeatPlanPicker() {
             aria-label="reset"
           >
             <HugeiconsIcon icon={Refresh04Icon} />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            onClick={() => setFullScreen(!fullScreen)}
+            className="text-muted-foreground"
+            aria-label={fullScreen ? "minimize" : "full screen"}
+          >
+            <HugeiconsIcon icon={fullScreen ? CollapseIcon : ExpandIcon} />
           </Button>
         </div>
       </div>
@@ -2148,4 +2173,4 @@ function SeatPlan(props: {
   );
 }
 
-export default SeatPlanPicker;
+export { SeatPlanPicker };

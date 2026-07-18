@@ -1,4 +1,7 @@
-import SeatPlanPicker from "~/components/widget/seat-plan-picker";
+import { Link } from "react-router";
+
+import { Button } from "~/components/core/button";
+import { SeatPlanPicker } from "~/components/widget/seat-plan-picker";
 
 export function meta() {
   return [
@@ -9,8 +12,20 @@ export function meta() {
 
 export default function Home() {
   return (
-    <div className="py-8">
+    <div>
+      <nav className="mx-auto mb-4 flex max-w-7xl items-center justify-between p-4">
+        <Logo />
+        <Button variant="ghost">Upload Photo</Button>
+      </nav>
       <SeatPlanPicker />
     </div>
+  );
+}
+
+function Logo() {
+  return (
+    <Link to="/" className="flex items-center gap-2">
+      <img src="/logo.png" className="size-10" />
+    </Link>
   );
 }
