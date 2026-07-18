@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Refresh04Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -9,11 +9,62 @@ import { Slider } from "~/components/core/slider";
 import { useIsMobile } from "~/hooks/use-mobile";
 
 const initialState = { x: 0, y: 0, scale: 1 };
+const minScale = 1;
+const maxScale = 5;
+
+function clampPosition(
+  crop: typeof initialState,
+  cw: number,
+  ch: number,
+): typeof initialState {
+  const mx = Math.max(0, (cw * (crop.scale - minScale)) / (2 * crop.scale));
+  const my = Math.max(0, (ch * (crop.scale - minScale)) / (2 * crop.scale));
+  return {
+    ...crop,
+    x: Math.min(mx, Math.max(-mx, crop.x)),
+    y: Math.min(my, Math.max(-my, crop.y)),
+  };
+}
+
+function clampCrop(
+  crop: typeof initialState,
+  cw: number,
+  ch: number,
+): typeof initialState {
+  return clampPosition(
+    {
+      ...crop,
+      scale: Math.min(maxScale, Math.max(minScale, crop.scale)),
+    },
+    cw,
+    ch,
+  );
+}
 
 function SeatPlanPicker() {
   const [crop, setCrop] = useState(initialState);
+  const [[cw, ch], setContainerSize] = useState<[number, number]>([0, 0]);
+  const [dragging, setDragging] = useState(false);
+  const [pinching, setPinching] = useState(false);
+  const [sliding, setSliding] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef(null);
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      setContainerSize([width, height]);
+      setCrop((crop) => clampCrop(crop, width, height));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const bx = Math.max(0, (cw * (crop.scale - minScale)) / 2);
+  const by = Math.max(0, (ch * (crop.scale - minScale)) / 2);
 
   useGesture(
     {
@@ -24,18 +75,31 @@ function SeatPlanPicker() {
           y: dy / crop.scale,
         }));
       },
+      onDragStart: () => setDragging(true),
+      onDragEnd: () => {
+        setDragging(false);
+        setCrop((crop) => clampCrop(crop, cw, ch));
+      },
       onPinch: ({ offset: [d] }) => {
-        setCrop((crop) => ({ ...crop, scale: d }));
+        setCrop((crop) => clampPosition({ ...crop, scale: d }, cw, ch));
+      },
+      onPinchStart: () => setPinching(true),
+      onPinchEnd: () => {
+        setPinching(false);
+        setCrop((crop) => clampCrop(crop, cw, ch));
       },
     },
     {
       drag: {
         from: () => [crop.x * crop.scale, crop.y * crop.scale],
+        bounds: { left: -bx, right: bx, top: -by, bottom: by },
+        rubberband: true,
       },
       pinch: {
         from: () => [crop.scale, 0],
-        scaleBounds: { min: 1, max: 5 },
+        scaleBounds: { min: minScale, max: maxScale },
         pinchOnWheel: true,
+        rubberband: true,
       },
       target: imageRef,
       eventOptions: { passive: false },
@@ -44,19 +108,32 @@ function SeatPlanPicker() {
 
   return (
     <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 px-4">
-      <div className="border-border relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-md border bg-neutral-50/50 md:aspect-video">
-        <SeatPlan ref={imageRef} crop={crop} />
-        <div className="absolute bottom-0 flex w-full max-w-sm flex-row items-center gap-2 p-2 md:right-0 md:w-auto md:flex-col md:gap-4 md:p-4">
+      <div
+        ref={containerRef}
+        className="border-border relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-md border bg-neutral-50/50 md:aspect-video"
+      >
+        <SeatPlan
+          ref={imageRef}
+          crop={crop}
+          gesturing={dragging || pinching || sliding}
+        />
+        <div
+          className="absolute bottom-0 flex w-full max-w-sm flex-row items-center gap-2 p-2 md:right-0 md:w-auto md:flex-col md:gap-4 md:p-4"
+          onPointerDown={() => setSliding(true)}
+          onPointerUp={() => setSliding(false)}
+          onPointerCancel={() => setSliding(false)}
+        >
           <Slider
             step={0.01}
-            min={1}
-            max={5}
+            min={minScale}
+            max={maxScale}
             value={crop.scale}
             orientation={isMobile ? "horizontal" : "vertical"}
-            onValueChange={(v) =>
-              setCrop((crop) => ({ ...crop, scale: v as number }))
-            }
-            className="w-full"
+            onValueChange={(v) => {
+              setCrop((crop) =>
+                clampCrop({ ...crop, scale: v as number }, cw, ch),
+              );
+            }}
             variant="muted"
           />
           <Button
@@ -77,8 +154,9 @@ function SeatPlanPicker() {
 function SeatPlan(props: {
   ref: React.RefObject<null>;
   crop: typeof initialState;
+  gesturing: boolean;
 }) {
-  const { ref, crop } = props;
+  const { ref, crop, gesturing } = props;
   const sectionClassName =
     "cursor-default fill-neutral-100 stroke-neutral-200 stroke-2 hover:fill-neutral-200/80 hover:stroke-neutral-400";
 
@@ -87,9 +165,10 @@ function SeatPlan(props: {
       viewBox="0 0 1737 1414"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="relative h-full w-full bg-red-50 p-6 active:cursor-move"
+      className="relative h-full w-full p-6 active:cursor-move"
       style={{
         transform: `scale(${crop.scale}) translate(${crop.x}px, ${crop.y}px)`,
+        transition: gesturing ? "none" : "transform 150ms ease-out",
         touchAction: "none",
       }}
       ref={ref}
