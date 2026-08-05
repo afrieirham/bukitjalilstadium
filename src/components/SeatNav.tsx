@@ -1,10 +1,21 @@
 import Link from "next/link";
+import { toast } from "sonner";
 
 import { seats } from "@/constant";
 import useRedirectPopunder from "@/hooks/useRedirectPopunder";
 
 function SeatNav({ current }: { current?: string }) {
   const { onOpenPopunder } = useRedirectPopunder();
+
+  const handleSeatClick = (seat: (typeof seats)[number]) => {
+    onOpenPopunder();
+    if (seat.photosUrl && seat.photosUrl.length > 0) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      toast.warning(`No photo available for Section ${seat.section}`);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center items-center my-16 px-4 max-w-screen-md mx-auto">
       <h2 className="text-md md:text-xl font-bold">Level 3</h2>
@@ -16,7 +27,7 @@ function SeatNav({ current }: { current?: string }) {
               <Link
                 scroll={false}
                 href={`/${seat.section.replaceAll("/", "-")}`}
-                onClick={() => onOpenPopunder()}
+                onClick={() => handleSeatClick(seat)}
                 className={`hover:underline mx-2 ${
                   current === seat.section ? "text-white" : ""
                 }`}
@@ -36,7 +47,7 @@ function SeatNav({ current }: { current?: string }) {
               <Link
                 scroll={false}
                 href={`/${seat.section.replaceAll("/", "-")}`}
-                onClick={() => onOpenPopunder()}
+                onClick={() => handleSeatClick(seat)}
                 className={`hover:underline mx-2 ${
                   current === seat.section ? "text-white" : ""
                 }`}
@@ -56,7 +67,7 @@ function SeatNav({ current }: { current?: string }) {
               <Link
                 scroll={false}
                 href={`/${seat.section.replaceAll("/", "-")}`}
-                onClick={() => onOpenPopunder()}
+                onClick={() => handleSeatClick(seat)}
                 className={`hover:underline mx-2 ${
                   current === seat.section ? "text-white" : ""
                 }`}
@@ -72,3 +83,4 @@ function SeatNav({ current }: { current?: string }) {
 }
 
 export default SeatNav;
+
