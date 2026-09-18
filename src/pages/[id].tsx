@@ -9,14 +9,16 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import SEOHead from "@/components/SEOHead";
 import SeatNav from "@/components/SeatNav";
 import SectorNav from "@/components/SectorNav";
 import useRedirectPopunder from "@/hooks/useRedirectPopunder";
 
 import BuiltBy from "../components/BuiltBy";
 import NavBar from "../components/NavBar";
+import SEOHead, { SITE_NAME, SITE_URL } from "@/components/SEOHead";
 import { seats } from "../constant";
+
+const STORAGE_URL = "https://storage.bukitjalilstadium.com";
 
 export const getStaticProps: GetStaticProps<{
   seat: (typeof seats)[number];
@@ -46,15 +48,36 @@ function SeatPage({
 }: InferGetServerSidePropsType<typeof getStaticProps>) {
   const { onOpenPopunder } = useRedirectPopunder();
   const title = `Section ${seat.section} (Level ${seat.level})`;
-  const description = `View of Bukit Jalil field from section ${seat.section} of Stadium Bukit Jalil.`;
+  const slug = seat.section.replaceAll("/", "-");
+  const description = `View of the field from section ${seat.section} (Level ${seat.level}) at Stadium Bukit Jalil (TM Stadium Nasional), Kuala Lumpur. See what the pitch and stage look like from this seat before you buy.`;
+  const photo = seat.photosUrl.length > 1 ? seat.photosUrl[1] : seat.photosUrl[0];
+  const ogPath = photo ? `${STORAGE_URL}/seats/${photo}` : "/og.png";
 
   return (
     <PhotoProvider>
       <SEOHead
-        title={title + ", Stadium Bukit Jalil | BukitJalilStadium.com"}
+        title={`${title}, Stadium Bukit Jalil (TM Stadium Nasional)`}
         description={description}
-        path={`/${seat.section}`}
-        ogPath={`/seats/${seat.photosUrl[1]}`}
+        path={`/${slug}`}
+        ogPath={ogPath}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: `${SITE_NAME} — Stadium Bukit Jalil seating view`,
+              item: SITE_URL,
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: title,
+              item: `${SITE_URL}/${slug}`,
+            },
+          ],
+        }}
       />
       <div className="pb-24">
         <NavBar />
@@ -111,12 +134,12 @@ function SeatPage({
                   >
                     <PhotoView
                       key={item}
-                      src={`https://storage.bukitjalilstadium.com/seats/${item}`}
+                      src={`${STORAGE_URL}/seats/${item}`}
                     >
                       {/** biome-ignore lint/performance/noImgElement: <intentional> */}
                       <img
                         alt={`${idx === 0 ? "1x" : "0.5x"} ${description}`}
-                        src={`https://storage.bukitjalilstadium.com/seats/${item}`}
+                        src={`${STORAGE_URL}/seats/${item}`}
                         className="w-full object-cover h-full"
                       />
                     </PhotoView>

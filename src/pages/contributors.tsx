@@ -63,7 +63,7 @@ function Contributors() {
       <SEOHead
         title="Contributors | BukitJalilStadium.com"
         description="List of contributors for BukitJalilStadium.com"
-        path="/"
+        path="/contributors"
         ogPath="/og.png"
       />
       <NavBar />
