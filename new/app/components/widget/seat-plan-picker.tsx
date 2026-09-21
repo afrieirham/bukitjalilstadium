@@ -136,7 +136,7 @@ function SeatPlanPicker() {
       <div
         ref={containerRef}
         className={cn(
-          "relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-md bg-neutral-50 md:aspect-video",
+          "relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-md bg-muted md:aspect-video",
           fullScreen && "h-full",
           !fullScreen && "border-border border",
         )}
@@ -195,7 +195,7 @@ function SectionLabel(props: { x: number; y: number; children: string; }) {
     <text
       x={props.x}
       y={props.y}
-      className="pointer-events-none fill-neutral-500 select-none"
+      className="pointer-events-none fill-muted-foreground select-none"
       textAnchor="middle"
       dominantBaseline="central"
       fontSize={24}
@@ -237,7 +237,7 @@ function SeatPlan(props: {
         <path
           id="outer-ring"
           d={outerRingPath}
-          className="stroke-neutral-200 stroke-2"
+          className="stroke-border stroke-2"
         />
         <path id="standing" d={standingPath} className="interactive-svg" />
         {sections.map((section) => (
