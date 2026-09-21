@@ -10,6 +10,7 @@ export default {
   prerender: [
     "/",
     "/404",
+    "/contribute",
     "/contributors",
     ...sections.map((section) => `/${sectionSlug(section.id)}`),
   ],

@@ -5,3 +5,6 @@
 # React Router
 /.react-router/
 /build/
+
+# Wrangler local state
+/.wrangler/
