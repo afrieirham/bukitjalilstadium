@@ -24,3 +24,23 @@ export function sectionPhotos(
 ): Contribution[] {
   return contributions.filter((item) => item.section === section);
 }
+
+export function photosBySection(
+  contributions: Contribution[],
+): Map<string, Contribution[]> {
+  const grouped = new Map<string, Contribution[]>();
+
+  for (const contribution of contributions) {
+    const photos = grouped.get(contribution.section) ?? [];
+    photos.push(contribution);
+    grouped.set(contribution.section, photos);
+  }
+
+  return grouped;
+}
+
+export function populatedSections(
+  contributions: Contribution[],
+): Set<string> {
+  return new Set(contributions.map((item) => item.section));
+}

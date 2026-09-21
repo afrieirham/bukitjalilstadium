@@ -111,3 +111,16 @@ body {
 .interactive-svg {
   @apply fill-card stroke-border stroke-2 hover:fill-primary/15 hover:stroke-primary active:cursor-move;
 }
+
+.interactive-svg[data-selected="true"] {
+  @apply fill-primary/20 stroke-primary;
+}
+
+.interactive-svg[data-empty="true"] {
+  @apply fill-card stroke-border opacity-40;
+}
+
+.interactive-svg[data-empty="true"]:hover,
+.interactive-svg[data-empty="true"]:focus-visible {
+  @apply fill-primary/10 opacity-70;
+}
