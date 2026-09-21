@@ -109,5 +109,5 @@ body {
 }
 
 .interactive-svg {
-  @apply fill-muted stroke-border stroke-2 hover:fill-primary/15 hover:stroke-primary active:cursor-move;
+  @apply fill-card stroke-border stroke-2 hover:fill-primary/15 hover:stroke-primary active:cursor-move;
 }
