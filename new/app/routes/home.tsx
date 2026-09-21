@@ -15,6 +15,7 @@ import {
   populatedSections,
   sectionSlug,
 } from "~/lib/contributions";
+import { useHydrated } from "~/hooks/use-hydrated";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { cn } from "~/lib/utils";
 
@@ -58,9 +59,15 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
 
-  const selected =
-    sectionIds.find((id) => sectionSlug(id) === searchParams.get("section")) ??
-    null;
+  // The prerendered HTML for "/" never has a Section selected, since a static
+  // host cannot prerender every ?section= variant. Selection is therefore
+  // applied after hydration, or the two renders disagree.
+  const hydrated = useHydrated();
+
+  const slug = searchParams.get("section");
+  const selected = hydrated
+    ? (sectionIds.find((id) => sectionSlug(id) === slug) ?? null)
+    : null;
   const photos = selected ? (loaderData.photosBySection[selected] ?? []) : [];
 
   function selectSection(section: string | null) {
