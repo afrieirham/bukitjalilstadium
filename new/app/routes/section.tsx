@@ -3,6 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "react-router";
 
 import { buttonVariants } from "~/components/core/button";
+import { SectionGallery } from "~/components/widget/section-gallery";
 import { sections } from "~/components/widget/seat-plan-data";
 import { contributions } from "~/data/contributions";
 import { sectionPhotos, sectionSlug } from "~/lib/contributions";
@@ -82,34 +83,11 @@ export default function Section({ loaderData }: Route.ComponentProps) {
         <SectionLink slug={sectionSlug(next)} label={next} direction="next" />
       </nav>
 
-      {photos.length > 0 ? (
-        <section className="grid gap-4 sm:grid-cols-2">
-          {photos.map((photo) => (
-            <figure key={photo.submissionId} className="flex flex-col gap-2">
-              <img
-                src={photoUrl(photo.photo)}
-                alt={photo.caption ?? `View from Section ${section}`}
-                loading="lazy"
-                className="bg-muted aspect-4/3 w-full rounded-lg object-cover"
-              />
-              <figcaption className="text-muted-foreground text-sm">
-                <PhotoCaption photo={photo} />
-              </figcaption>
-            </figure>
-          ))}
-        </section>
-      ) : (
-        <section className="border-border bg-muted/40 flex flex-col items-start gap-3 rounded-lg border p-6">
-          <h2 className="font-medium">No photo for this Section yet</h2>
-          <p className="text-muted-foreground text-sm">
-            Nobody has shared a view from Section {section}. If you have one, it
-            would help the next person decide.
-          </p>
-          <Link to={contributeHref} className={cn(buttonVariants())}>
-            Share a photo
-          </Link>
-        </section>
-      )}
+      <SectionGallery
+        section={section}
+        photos={photos}
+        className="sm:grid-cols-2"
+      />
 
       {photos.length > 0 && (
         <Link to={contributeHref} className="text-muted-foreground text-sm hover:underline">
@@ -169,21 +147,6 @@ function SectionLink({
       {isNext && <HugeiconsIcon icon={ArrowRight01Icon} />}
     </Link>
   );
-}
-
-function PhotoCaption({ photo }: { photo: (typeof contributions)[number] }) {
-  const parts = [
-    photo.date,
-    photo.row ? `Row ${photo.row}` : null,
-    photo.seat ? `Seat ${photo.seat}` : null,
-    photo.contributor?.name ?? null,
-  ].filter(Boolean);
-
-  if (photo.caption) parts.unshift(photo.caption);
-
-  if (parts.length === 0) return <span>Shared by a fellow fan</span>;
-
-  return <span>{parts.join(" · ")}</span>;
 }
 
 function sectionTitle(section: string): string {

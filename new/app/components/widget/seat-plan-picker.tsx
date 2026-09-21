@@ -54,7 +54,17 @@ function clampCrop(
   );
 }
 
-function SeatPlanPicker() {
+function SeatPlanPicker({
+  populated,
+  selected,
+  onSelect,
+  className,
+}: {
+  populated: string[];
+  selected: string | null;
+  onSelect: (section: string) => void;
+  className?: string;
+}) {
   const [crop, setCrop] = useState(initialState);
   const [[cw, ch], setContainerSize] = useState<[number, number]>([0, 0]);
   const [dragging, setDragging] = useState(false);
@@ -128,9 +138,9 @@ function SeatPlanPicker() {
   return (
     <div
       className={cn(
-        "mx-auto grid w-full grid-cols-1 gap-4 px-4",
+        "grid w-full grid-cols-1 gap-4",
         fullScreen && "absolute top-0 z-10 h-dvh w-dvw p-0",
-        !fullScreen && "max-w-6xl",
+        className,
       )}
     >
       <div
@@ -146,6 +156,9 @@ function SeatPlanPicker() {
           crop={crop}
           gesturing={dragging || pinching || sliding}
           hasDraggedRef={hasDraggedRef}
+          populated={populated}
+          selected={selected}
+          onSelect={onSelect}
         />
         <div
           className="absolute bottom-0 flex w-full max-w-sm flex-row items-center gap-2 p-2 md:right-0 md:w-auto md:flex-col md:p-4"
@@ -210,8 +223,12 @@ function SeatPlan(props: {
   crop: typeof initialState;
   gesturing: boolean;
   hasDraggedRef: React.RefObject<boolean>;
+  populated: string[];
+  selected: string | null;
+  onSelect: (section: string) => void;
 }) {
-  const { ref, crop, gesturing, hasDraggedRef } = props;
+  const { ref, crop, gesturing, hasDraggedRef, populated, selected, onSelect } =
+    props;
 
   return (
     <svg
@@ -240,18 +257,40 @@ function SeatPlan(props: {
           className="stroke-border stroke-2"
         />
         <path id="standing" d={standingPath} className="interactive-svg" />
-        {sections.map((section) => (
-          <g key={section.id} id={section.id}>
-            <path
-              d={section.d}
-              className="interactive-svg"
-              strokeLinejoin={section.roundJoin ? "round" : undefined}
-            />
-            <SectionLabel x={section.labelX} y={section.labelY}>
-              {section.id}
-            </SectionLabel>
-          </g>
-        ))}
+        {sections.map((section) => {
+          const hasPhotos = populated.includes(section.id);
+          const isSelected = selected === section.id;
+
+          return (
+            <g key={section.id} id={section.id}>
+              <path
+                d={section.d}
+                data-empty={hasPhotos ? undefined : true}
+                data-selected={isSelected ? true : undefined}
+                role="button"
+                tabIndex={0}
+                aria-label={
+                  hasPhotos
+                    ? `Section ${section.id}`
+                    : `Section ${section.id}, no photos yet`
+                }
+                aria-pressed={isSelected}
+                onClick={() => onSelect(section.id)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    onSelect(section.id);
+                  }
+                }}
+                className="interactive-svg cursor-pointer"
+                strokeLinejoin={section.roundJoin ? "round" : undefined}
+              />
+              <SectionLabel x={section.labelX} y={section.labelY}>
+                {section.id}
+              </SectionLabel>
+            </g>
+          );
+        })}
         <g id="gate">
           {gates.map((gate) => (
             <SectionLabel key={gate.label} x={gate.x} y={gate.y}>
