@@ -85,11 +85,22 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   return (
     <div>
-      <nav className="mx-auto mb-4 flex max-w-7xl items-center justify-between p-4">
+      <nav className="mx-auto mb-4 flex max-w-7xl items-center justify-between gap-4 p-4">
         <Logo />
-        <Link to="/contribute" className={cn(buttonVariants({ variant: "ghost" }))}>
-          Upload Photo
-        </Link>
+        <div className="flex items-center gap-1">
+          <Link
+            to="/contributors"
+            className={cn(buttonVariants({ variant: "ghost" }))}
+          >
+            Contributors
+          </Link>
+          <Link
+            to="/contribute"
+            className={cn(buttonVariants({ variant: "ghost" }))}
+          >
+            Upload Photo
+          </Link>
+        </div>
       </nav>
 
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 md:grid-cols-[minmax(0,1fr)_22rem]">
