@@ -9,5 +9,5 @@
 # Wrangler local state
 /.wrangler/
 
-# Local wrangler secrets
+# Local wrangler secrets (holds the GitHub token and Turnstile secret)
 .dev.vars
