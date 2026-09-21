@@ -3,14 +3,18 @@
   "name": "bukitjalilstadium",
   "pages_build_output_dir": "./build/client",
   "compatibility_date": "2026-09-21",
+
+  // This file is the source of truth for the Pages project, so the dashboard
+  // can manage Secrets only. The BUCKET (R2) and RATE_LIMIT (KV) bindings are
+  // inserted right after compatibility_date by
+  // new/scripts/setup-contribute-credentials.sh, which also fills in the
+  // Turnstile site key below.
+
   "vars": {
-    "GITHUB_REPO": "afrieirham/bukitjalilstadium"
+    "GITHUB_REPO": "afrieirham/bukitjalilstadium",
+    // Public Turnstile site key, served to the browser by /api/config. While
+    // it is empty, the form refuses to submit rather than submitting without a
+    // bot check.
+    "TURNSTILE_SITE_KEY": ""
   }
-  // The BUCKET and RATE_LIMIT bindings, and the TURNSTILE_SECRET and
-  // GITHUB_TOKEN secrets, are set on the Pages project rather than here, so a
-  // missing value cannot break a deploy. See docs/agents for the setup wizard.
-  //
-  // To keep them in code instead, add:
-  // "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "<your bucket>" }],
-  // "kv_namespaces": [{ "binding": "RATE_LIMIT", "id": "<your namespace id>" }]
 }

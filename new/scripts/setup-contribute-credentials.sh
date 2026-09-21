@@ -184,13 +184,20 @@ finish() {
 # Replace the example below. Set TOTAL_STAGES to match the stages you write.
 # ──────────────────────────────────────────────────────────────────────────
 
+APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+ENV_FILE="$APP_DIR/.dev.vars"
+
 TOTAL_STAGES=8
 
 banner "Contribution credentials"
 
 say "This wires up everything the /contribute form needs: a bot challenge, a"
 say "place to put photos, a counter for the rate limit, and permission to open"
-say "a pull request for review. Nothing here is committed to the repo."
+say "a pull request for review."
+say ""
+note "This project is configured by new/wrangler.jsonc. Cloudflare therefore"
+note "treats that file as the source of truth: bindings and plain variables are"
+note "set there in the repo, and only Secrets can be set in the dashboard."
 pause "Ready to start?"
 
 # ── 1 ─────────────────────────────────────────────────────────────────────
@@ -204,7 +211,9 @@ note "    bukitjalilstadium.com             (the custom domain, once cut over)"
 step "Save, then copy the Site Key (public) and the Secret Key (private)."
 say ""
 ask TURNSTILE_SITE_KEY "Paste the Site Key:"
+write_env TURNSTILE_SITE_KEY "$TURNSTILE_SITE_KEY"
 ask_secret TURNSTILE_SECRET "Paste the Secret Key:"
+write_env TURNSTILE_SECRET "$TURNSTILE_SECRET"
 
 # ── 2 ─────────────────────────────────────────────────────────────────────
 stage "R2: find the photos bucket"
@@ -214,6 +223,7 @@ step "Find the bucket behind that custom domain and copy its name."
 note "  If several look plausible, open each bucket's Settings and check which one"
 note "  has the custom domain storage.bukitjalilstadium.com attached."
 ask R2_BUCKET "Paste the bucket name:"
+write_env R2_BUCKET "$R2_BUCKET"
 
 # ── 3 ─────────────────────────────────────────────────────────────────────
 stage "KV: create the rate-limit namespace"
@@ -222,6 +232,7 @@ open_url "https://dash.cloudflare.com/?to=/:account/workers/kv/namespaces"
 step "Create an instance named bukitjalilstadium-rate-limit (any name will do)."
 step "Open it and copy the ID."
 ask RATE_LIMIT_ID "Paste the namespace ID:"
+write_env RATE_LIMIT_ID "$RATE_LIMIT_ID"
 
 # ── 4 ─────────────────────────────────────────────────────────────────────
 stage "GitHub: a token that can open pull requests"
@@ -235,47 +246,86 @@ step "Permissions: Contents -> Read and write; Pull requests -> Read and write."
 note "  Metadata read is added automatically and is required."
 step "Generate the token and copy it."
 ask_secret GITHUB_TOKEN "Paste the token:"
+write_env GITHUB_TOKEN "$GITHUB_TOKEN"
 
 # ── 5 ─────────────────────────────────────────────────────────────────────
-stage "Pages: variables and secrets"
-say "Now put the values on the Pages project. Settings -> Variables and Secrets."
+stage "Pages: the two secrets"
+say "Secrets are the only thing the dashboard can still manage on this project,"
+say "because wrangler.jsonc owns everything else."
 open_url "https://dash.cloudflare.com/674dbb32223211880bd2173cddf921a7/pages/view/bukitjalilstadium"
-step "Add a plain variable VITE_TURNSTILE_SITE_KEY, for both Production and Preview."
-note "    value: the public Site Key from Stage 1"
-step "Add a secret TURNSTILE_SECRET, for both environments."
-note "    value: the Secret Key from Stage 1 (it is also in new/.dev.vars)"
-step "Add a secret GITHUB_TOKEN, for both environments."
-note "    value: the token from Stage 4 (it is also in new/.dev.vars)"
-warn "The dashboard labels move around; if you cannot find these, look for"
-warn "'Environment variables' or 'Variables and Secrets' in the project settings."
-pause "Press Enter once all three are saved."
+step "Open Settings, then Variables and Secrets."
+step "Add a Secret named TURNSTILE_SECRET, for both Production and Preview."
+note "    value: the Secret Key from Stage 1 (also saved in new/.dev.vars)"
+step "Add a Secret named GITHUB_TOKEN, for both environments."
+note "    value: the token from Stage 4 (also saved in new/.dev.vars)"
+warn "Do not try to add BUCKET, RATE_LIMIT or a site key here: this project's"
+warn "bindings and plain variables come from the repository instead."
+pause "Press Enter once both secrets are saved."
 
 # ── 6 ─────────────────────────────────────────────────────────────────────
-stage "Pages: bindings"
-say "Bindings are how the Function reaches the bucket and the counter."
-step "In the same project, find Bindings (Settings -> Bindings)."
-step "Add an R2 bucket binding with the variable name exactly: BUCKET"
-note "    bucket: the name from Stage 2"
-step "Add a KV namespace binding with the variable name exactly: RATE_LIMIT"
-note "    namespace: the one from Stage 3"
-pause "Press Enter once both bindings are saved."
+stage "Repository: the bindings and the site key"
+say "Writing the bucket, the namespace and the site key into new/wrangler.jsonc."
+say "None of these are secret, and keeping them in git is what makes the"
+say "configuration reviewable."
+
+node - "$APP_DIR/wrangler.jsonc" "$TURNSTILE_SITE_KEY" "$R2_BUCKET" "$RATE_LIMIT_ID" <<'NODE'
+const { readFileSync, writeFileSync } = require("node:fs");
+
+const [file, siteKey, bucket, kvId] = process.argv.slice(2);
+let text = readFileSync(file, "utf8");
+
+const keyPattern = /("TURNSTILE_SITE_KEY":\s*)"[^"]*"/;
+if (!keyPattern.test(text)) throw new Error("TURNSTILE_SITE_KEY is missing from wrangler.jsonc");
+text = text.replace(keyPattern, `$1${JSON.stringify(siteKey)}`);
+
+// Drop any binding lines from a previous run, then insert fresh ones after
+// compatibility_date, which is where the comma already is.
+const lines = text
+  .split("\n")
+  .filter((line) => {
+    const bare = line.replace(/^\s*\/\/\s*/, "").trim();
+    return !bare.startsWith('"r2_buckets"') && !bare.startsWith('"kv_namespaces"');
+  });
+
+const anchor = lines.findIndex((line) => line.includes('"compatibility_date"'));
+if (anchor === -1) throw new Error("compatibility_date is missing from wrangler.jsonc");
+if (!lines[anchor].trimEnd().endsWith(",")) throw new Error("compatibility_date needs a trailing comma");
+
+lines.splice(
+  anchor + 1,
+  0,
+  `  "r2_buckets": [{ "binding": "BUCKET", "bucket_name": ${JSON.stringify(bucket)} }],`,
+  `  "kv_namespaces": [{ "binding": "RATE_LIMIT", "id": ${JSON.stringify(kvId)} }],`,
+);
+text = lines.join("\n");
+
+// The file is JSON with // comments, so strip those and prove it still parses.
+const parsed = JSON.parse(text.replace(/^\s*\/\/.*$/gm, ""));
+if (parsed.vars.TURNSTILE_SITE_KEY !== siteKey) throw new Error("site key did not land");
+if (parsed.r2_buckets[0].bucket_name !== bucket) throw new Error("bucket did not land");
+if (parsed.kv_namespaces[0].id !== kvId) throw new Error("namespace id did not land");
+
+writeFileSync(file, text);
+console.log("  validated new/wrangler.jsonc");
+NODE
+
+say ""
+step "Commit and push, so Pages picks the configuration up:"
+note "    git add new/wrangler.jsonc"
+note "    git commit -m 'chore: connect the contribute bindings'"
+note "    git push"
+warn "Until this is pushed, the deployed site still has no bucket or counter."
 
 # ── 7 ─────────────────────────────────────────────────────────────────────
-stage "Local development files"
-say "Writing the values you entered to two local files so wrangler pages dev and"
-say "npm run dev can reach the real services. Neither file belongs in git."
-APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-ENV_FILE="$APP_DIR/.dev.vars"
+stage "Local development file"
+say "Writing the same values plus the secrets to new/.dev.vars, which wrangler"
+say "reads for local development. It is git-ignored."
 write_env TURNSTILE_SECRET "$TURNSTILE_SECRET"
+write_env TURNSTILE_SITE_KEY "$TURNSTILE_SITE_KEY"
 write_env GITHUB_TOKEN "$GITHUB_TOKEN"
 write_env R2_BUCKET "$R2_BUCKET"
 write_env RATE_LIMIT_ID "$RATE_LIMIT_ID"
-ENV_FILE="$APP_DIR/.env"
-write_env VITE_TURNSTILE_SITE_KEY "$TURNSTILE_SITE_KEY"
-ENV_FILE="$APP_DIR/.dev.vars"
-
-printf '  %s✓ wrote%s VITE_TURNSTILE_SITE_KEY → %s\n' "$GREEN" "$RESET" "$APP_DIR/.env"
-if grep -qE '^/?\.dev\.vars$' "$APP_DIR/.gitignore" 2>/dev/null; then
+if grep -qE '^\.dev\.vars$' "$APP_DIR/.gitignore" 2>/dev/null; then
   note "  .dev.vars is already ignored by git."
 else
   warn "add .dev.vars to new/.gitignore before committing anything"
@@ -284,21 +334,20 @@ fi
 
 # ── 8 ─────────────────────────────────────────────────────────────────────
 stage "Verify"
-say "Trigger a fresh deployment so the new variables and bindings take effect:"
-step "In the Pages project, choose 'Retry deployment', or push any commit."
+say "Wait for the deployment that your push triggered, then check three things."
 say ""
-say "Then check the endpoint reports a challenge failure rather than a"
-say "configuration failure. A 503 means a binding or secret is still missing;"
-say "a 403 for a made-up token means everything is wired."
-step "Run:"
+step "1. The public site key is being served:"
+note "    curl -sS https://bukitjalilstadium-1ms.pages.dev/api/config"
+note "    expect {\"turnstileSiteKey\":\"<your site key>\"}"
+say ""
+step "2. A submission is refused for the right reason:"
 note "    curl -sS -X POST https://bukitjalilstadium-1ms.pages.dev/api/photos \\"
 note "      -F photo=@some.jpg -F turnstileToken=nonsense -w ' %{http_code}\\n'"
+note "    expect 403 'could not confirm you are human'."
+note "    A 503 means a secret or binding is still missing."
 say ""
-say "Expected: {\"error\":\"We could not confirm you are human...\"} 403"
-say ""
-say "Finally, open the site, submit a real Contribution, and confirm the pull"
-say "request appears in the repository. Delete that test contribution before"
-say "merging it."
+step "3. Submit a real Contribution from the site and confirm the pull request"
+step "   appears. Close that test pull request instead of merging it."
 open_url "https://bukitjalilstadium-1ms.pages.dev/contribute"
 
 finish

@@ -24,6 +24,8 @@ export interface Env {
   BUCKET: PhotoBucket;
   RATE_LIMIT: CounterNamespace;
   TURNSTILE_SECRET: string;
+  /** Public Turnstile site key, handed to the browser by /api/config. */
+  TURNSTILE_SITE_KEY?: string;
   GITHUB_TOKEN: string;
   GITHUB_REPO: string;
   /** Overridable so the pull request path can be exercised against a stub. */
