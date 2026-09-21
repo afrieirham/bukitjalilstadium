@@ -24,9 +24,3 @@ export function sectionPhotos(
 ): Contribution[] {
   return contributions.filter((item) => item.section === section);
 }
-
-export function populatedSections(
-  contributions: Contribution[],
-): Set<string> {
-  return new Set(contributions.map((item) => item.section));
-}

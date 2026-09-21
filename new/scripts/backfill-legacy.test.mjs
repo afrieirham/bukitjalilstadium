@@ -9,7 +9,7 @@ import {
   buildContributions,
   parseLegacyContributors,
   parseLegacySeats,
-  photoKey,
+  photoObjectKey,
 } from "./backfill-legacy.mjs";
 
 const appRoot = path.resolve(fileURLToPath(import.meta.url), "../..");
@@ -114,7 +114,7 @@ test("turns Sections and Contributors into one contribution per photo", () => {
 
 test("matches credited Sections written in slug form", () => {
   assert.equal(sectionSlug("201A/B"), "201A-B");
-  assert.equal(photoKey("C-104-1.jpg"), "seats/C-104-1.jpg");
+  assert.equal(photoObjectKey("C-104-1.jpg"), "seats/C-104-1.jpg");
 
   const contributions = buildContributions({
     seats: [{ section: "201A/B", photos: ["2A-1.jpg"] }],

@@ -111,7 +111,3 @@ body {
 .interactive-svg {
   @apply fill-muted stroke-border stroke-2 hover:fill-primary/15 hover:stroke-primary active:cursor-move;
 }
-
-.interactive-svg[data-selected="true"] {
-  @apply fill-primary/20 stroke-primary;
-}

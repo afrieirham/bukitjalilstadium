@@ -5,7 +5,7 @@ import { pathToFileURL } from "node:url";
 
 import { sectionSlug } from "../app/lib/contributions.ts";
 
-export function photoKey(filename) {
+export function photoObjectKey(filename) {
   return `seats/${filename}`;
 }
 
@@ -49,7 +49,7 @@ export function buildContributions({ seats, contributors }) {
     return seat.photos.map((filename, index) => ({
       submissionId: `legacy-${key}-${index + 1}`,
       section: seat.section,
-      photo: photoKey(filename),
+      photo: photoObjectKey(filename),
       date: null,
       caption: null,
       row: null,
