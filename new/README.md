@@ -6,7 +6,7 @@ A modern, production-ready template for building full-stack React applications u
 
 ## Features
 
-- 🚀 Server-side rendering
+- 🚀 Static prerendering (no server at runtime)
 - ⚡️ Hot Module Replacement (HMR)
 - 📦 Asset bundling and optimization
 - 🔄 Data loading and mutations
@@ -44,39 +44,19 @@ npm run build
 
 ## Deployment
 
-### Docker Deployment
-
-To build and run using Docker:
+The app builds to a static site. No server runs at runtime.
 
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+npm run build
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
+The build prerenders every route, then flattens each route directory to its
+sibling `.html` file so that `/201A-B` stays the canonical slashless URL.
+Deploy the `build/client` directory.
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
+On Cloudflare Pages, set the root directory to this app, the build command to
+`npm ci && npm run build`, and the build output directory to `build/client`.
+Merging a Contribution pull request triggers a rebuild.
 
 ## Styling
 
