@@ -17,11 +17,43 @@ import {
 } from "~/lib/contributions";
 import { useHydrated } from "~/hooks/use-hydrated";
 import { useIsMobile } from "~/hooks/use-mobile";
+import { SITE_NAME, SITE_URL } from "~/lib/site";
 import { cn } from "~/lib/utils";
 
 import type { Route } from "./+types/home";
 
 const sectionIds = sections.map((section) => section.id);
+
+const TITLE = `Stadium Bukit Jalil (TM Stadium Nasional) Seating View | ${SITE_NAME}`;
+const DESCRIPTION =
+  "Field view from seats in each section inside Stadium Bukit Jalil (TM Stadium Nasional) — see what the pitch and stage look like from your seat before you buy.";
+
+const stadiumSchema = {
+  "@context": "https://schema.org",
+  "@type": "StadiumOrArena",
+  name: "Stadium Bukit Jalil",
+  alternateName: [
+    "TM Stadium Nasional",
+    "Stadium Nasional Bukit Jalil",
+    "Bukit Jalil National Stadium",
+    "National Stadium Bukit Jalil",
+  ],
+  url: SITE_URL,
+  image: `${SITE_URL}/og.png`,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Bukit Jalil Sports Complex, Jalan Barat",
+    addressLocality: "Kuala Lumpur",
+    postalCode: "57000",
+    addressCountry: "MY",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 3.0546304,
+    longitude: 101.6912767,
+  },
+  sameAs: ["https://en.wikipedia.org/wiki/Bukit_Jalil_National_Stadium"],
+};
 
 export function loader() {
   return {
@@ -44,14 +76,15 @@ export function shouldRevalidate({
 
 export function meta() {
   return [
-    {
-      title: "Stadium Bukit Jalil seat views | BukitJalilStadium.com",
-    },
-    {
-      name: "description",
-      content:
-        "See what the pitch and stage look like from every Section of Stadium Bukit Jalil (TM Stadium Nasional), Kuala Lumpur, using photos shared by fans.",
-    },
+    { title: TITLE },
+    { name: "description", content: DESCRIPTION },
+    { tagName: "link", rel: "canonical", href: SITE_URL },
+    { property: "og:type", content: "website" },
+    { property: "og:site_name", content: SITE_NAME },
+    { property: "og:title", content: TITLE },
+    { property: "og:description", content: DESCRIPTION },
+    { property: "og:image", content: `${SITE_URL}/og.png` },
+    { name: "twitter:card", content: "summary_large_image" },
   ];
 }
 
@@ -85,6 +118,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(stadiumSchema) }}
+      />
+
       <nav className="mx-auto mb-4 flex max-w-7xl items-center justify-between gap-4 p-4">
         <Logo />
         <div className="flex items-center gap-1">

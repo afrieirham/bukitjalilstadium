@@ -11,17 +11,20 @@ export function loader() {
 }
 
 export function meta() {
+  const title = `Contributors | ${SITE_NAME}`;
+  const description =
+    "The fans who shared seat views from Stadium Bukit Jalil (TM Stadium Nasional), Kuala Lumpur.";
+
   return [
-    { title: `Contributors | ${SITE_NAME}` },
-    {
-      name: "description",
-      content: `The fans who shared seat views from Stadium Bukit Jalil (TM Stadium Nasional), Kuala Lumpur.`,
-    },
-    {
-      tagName: "link",
-      rel: "canonical",
-      href: `${SITE_URL}/contributors`,
-    },
+    { title },
+    { name: "description", content: description },
+    { tagName: "link", rel: "canonical", href: `${SITE_URL}/contributors` },
+    { property: "og:type", content: "website" },
+    { property: "og:site_name", content: SITE_NAME },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:image", content: `${SITE_URL}/og.png` },
+    { name: "twitter:card", content: "summary_large_image" },
   ];
 }
 
