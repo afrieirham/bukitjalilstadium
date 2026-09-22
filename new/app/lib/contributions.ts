@@ -55,6 +55,7 @@ export function populatedSections(
   return new Set(contributions.map((item) => item.section));
 }
 
+
 /**
  * A Contributor is identified by their name together with their link, so the
  * same display name with and without a link is not merged into one person.

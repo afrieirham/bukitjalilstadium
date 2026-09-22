@@ -115,3 +115,4 @@ test("the same name with and without a link stays distinct", () => {
 
   assert.equal(credits.length, 2);
 });
+

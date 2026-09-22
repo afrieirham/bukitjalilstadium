@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "react-router build && node scripts/flatten-prerender.mjs",
+    "build": "react-router build && node scripts/flatten-prerender.mjs && node scripts/generate-referenced-photos.mjs",
     "dev": "react-router dev",
     "dev:host": "react-router dev --host",
     "test": "node --test scripts/",
