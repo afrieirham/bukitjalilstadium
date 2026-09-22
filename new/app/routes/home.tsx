@@ -1,7 +1,7 @@
-import { Link, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import type { ShouldRevalidateFunctionArgs } from "react-router";
 
-import { buttonVariants } from "~/components/core/button";
+import { PageContainer } from "~/components/core/app-shell";
 import { SeatPlanPicker } from "~/components/widget/seat-plan-picker";
 import {
   SectionPanelContent,
@@ -18,7 +18,6 @@ import {
 import { useHydrated } from "~/hooks/use-hydrated";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { SITE_NAME, SITE_URL } from "~/lib/site";
-import { cn } from "~/lib/utils";
 
 import type { Route } from "./+types/home";
 
@@ -123,43 +122,27 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(stadiumSchema) }}
       />
 
-      <nav className="mx-auto mb-4 flex max-w-7xl items-center justify-between gap-4 p-4">
-        <Logo />
-        <div className="flex items-center gap-1">
-          <Link
-            to="/contributors"
-            className={cn(buttonVariants({ variant: "ghost" }))}
-          >
-            Contributors
-          </Link>
-          <Link
-            to="/contribute"
-            className={cn(buttonVariants({ variant: "ghost" }))}
-          >
-            Upload Photo
-          </Link>
+      <PageContainer>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_22rem]">
+          <SeatPlanPicker
+            populated={loaderData.populatedSections}
+            selected={selected}
+            onSelect={selectSection}
+          />
+
+          <aside className="hidden md:block">
+            {selected ? (
+              <SectionPanelContent
+                section={selected}
+                photos={photos}
+                onClose={() => selectSection(null)}
+              />
+            ) : (
+              <SectionPanelPlaceholder />
+            )}
+          </aside>
         </div>
-      </nav>
-
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 px-4 md:grid-cols-[minmax(0,1fr)_22rem]">
-        <SeatPlanPicker
-          populated={loaderData.populatedSections}
-          selected={selected}
-          onSelect={selectSection}
-        />
-
-        <aside className="hidden md:block">
-          {selected ? (
-            <SectionPanelContent
-              section={selected}
-              photos={photos}
-              onClose={() => selectSection(null)}
-            />
-          ) : (
-            <SectionPanelPlaceholder />
-          )}
-        </aside>
-      </div>
+      </PageContainer>
 
       {isMobile && selected && (
         <SectionSheet
@@ -169,13 +152,5 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         />
       )}
     </div>
-  );
-}
-
-function Logo() {
-  return (
-    <Link to="/" className="flex items-center gap-2">
-      <img src="/logo.png" alt="Bukit Jalil Stadium" className="size-10" />
-    </Link>
   );
 }

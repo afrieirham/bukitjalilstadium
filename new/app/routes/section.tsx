@@ -2,6 +2,7 @@ import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "react-router";
 
+import { PageContainer } from "~/components/core/app-shell";
 import { buttonVariants } from "~/components/core/button";
 import { SectionGallery } from "~/components/widget/section-gallery";
 import { sections } from "~/components/widget/seat-plan-data";
@@ -64,7 +65,7 @@ export default function Section({ loaderData }: Route.ComponentProps) {
   const contributeHref = `/contribute?section=${sectionSlug(section)}`;
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-8">
+    <PageContainer className="flex max-w-5xl flex-col gap-8">
       <Link
         to="/"
         className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "-ml-2 self-start")}
@@ -118,7 +119,7 @@ export default function Section({ loaderData }: Route.ComponentProps) {
           }),
         }}
       />
-    </main>
+    </PageContainer>
   );
 }
 

@@ -8,23 +8,15 @@ import {
 } from "react-router";
 
 import { Analytics } from "~/components/widget/analytics";
+import { AppShell } from "~/components/core/app-shell";
 
 import type { Route } from "./+types/root";
 
 import "./app.css";
 
-export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-];
+// Inter is self-hosted through @fontsource-variable/inter in app.css, so there
+// is no Google Fonts stylesheet to fetch or preconnect to.
+export const links: Route.LinksFunction = () => [];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -36,7 +28,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="selection:bg-primary/25">
-        {children}
+        <AppShell>{children}</AppShell>
         <ScrollRestoration />
         <Scripts />
         <Analytics />
