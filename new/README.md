@@ -77,12 +77,17 @@ curl -sS -X POST https://bukitjalilstadium-1ms.pages.dev/api/cleanup \
   -d '{"olderThanDays": 30}'
 ```
 
-It is a dry run unless you pass `{"apply": true}`. It only deletes a photo when **both** are true:
+It is a dry run unless you pass `{"apply": true}`. The pull request is the decision:
 
-- no published Contribution points at it, and
-- no **open pull request** points at it,
+| The submission's pull request | Its photos |
+| --- | --- |
+| **Open** | kept, however long they have waited |
+| **Closed without merging** | deleted — that is a rejection |
+| **Merged** | the ones the Contribution publishes are kept; the ones you removed from the pull request are deleted |
 
-and it is older than the threshold. So a photo is safe however long you take: publishing never moves a photo out of the pending area, and an undecided submission keeps its photos for as long as its pull request is open. Closing a pull request is what makes its photos sweepable.
+A photo that no pull request knows about — someone uploaded and never submitted — is the only case decided by age, and that is what `olderThanDays` is for (default 30).
+
+Because an open pull request protects its photos indefinitely, nothing is ever deleted out from under a submission you have not decided on. The trade-off is moderation debt, so the response also lists submissions that have been waiting longer than `staleAfterDays` (default 14), for you to triage. It reports them; it never acts on them.
 
 ## Styling
 
