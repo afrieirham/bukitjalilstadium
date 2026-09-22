@@ -3,6 +3,8 @@
   "name": "bukitjalilstadium",
   "pages_build_output_dir": "./build/client",
   "compatibility_date": "2026-09-21",
+  "r2_buckets": [{ "binding": "BUCKET", "bucket_name": "bukitjalilstadium" }],
+  "kv_namespaces": [{ "binding": "RATE_LIMIT", "id": "a90fc5fcf48f4286906a40be6185ad82" }],
 
   // This file is the source of truth for the Pages project, so the dashboard
   // can manage Secrets only. The BUCKET (R2) and RATE_LIMIT (KV) bindings are
@@ -15,6 +17,6 @@
     // Public Turnstile site key, served to the browser by /api/config. While
     // it is empty, the form refuses to submit rather than submitting without a
     // bot check.
-    "TURNSTILE_SITE_KEY": ""
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAE-9zVsN_2z2AD1Z"
   }
 }
