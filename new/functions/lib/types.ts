@@ -6,6 +6,11 @@
  * runtime wires handlers by export name, so these types exist for our own
  * checking only.
  */
+export interface ListedObject {
+  key: string;
+  uploaded: Date;
+}
+
 export interface PhotoBucket {
   put(
     key: string,
@@ -13,6 +18,12 @@ export interface PhotoBucket {
     options?: { httpMetadata?: { contentType?: string } },
   ): Promise<unknown>;
   head(key: string): Promise<unknown>;
+  list(options: {
+    prefix?: string;
+    cursor?: string;
+    limit?: number;
+  }): Promise<{ objects: ListedObject[]; truncated: boolean; cursor?: string }>;
+  delete(key: string): Promise<unknown>;
 }
 
 export interface CounterNamespace {
@@ -30,6 +41,8 @@ export interface Env {
   GITHUB_REPO: string;
   /** Overridable so the pull request path can be exercised against a stub. */
   GITHUB_API?: string;
+  /** Set by Pages; used to avoid serving a stale build manifest from cache. */
+  CF_PAGES_COMMIT_SHA?: string;
 }
 
 export interface PagesContext {
