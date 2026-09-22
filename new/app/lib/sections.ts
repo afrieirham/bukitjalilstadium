@@ -14,6 +14,61 @@ export function sectionOrder(ids: string[]): string[] {
   return [...ids].sort(compareSections);
 }
 
+/**
+ * Moves one Level up or down, keeping the Section's number and suffix where it
+ * can. A number that does not exist on the target Level (for example 231A) lands
+ * on the nearest number there, so a keyboard jump never dead-ends.
+ */
+export function sectionLevelShift(
+  id: string,
+  ids: string[],
+  direction: -1 | 1,
+): string | null {
+  const target = sectionLevel(id) + direction;
+  if (target < 1 || target > 3) return null;
+
+  const onTarget = sectionOrder(
+    ids.filter((other) => sectionLevel(other) === target),
+  );
+  if (onTarget.length === 0) return null;
+
+  const { number, suffix } = parseSection(id);
+  const exact = onTarget.find((other) => {
+    const parsed = parseSection(other);
+    return parsed.number === number && parsed.suffix === suffix;
+  });
+  if (exact) return exact;
+
+  return onTarget.reduce((closest, other) =>
+    Math.abs(parseSection(other).number - number) <
+    Math.abs(parseSection(closest).number - number)
+      ? other
+      : closest,
+  );
+}
+
+/**
+ * Resolves what someone typed into a Section lookup. Punctuation and case are
+ * ignored, so "201a/b", "201A-B" and "201ab" all find "201A/B".
+ */
+export function findSectionByQuery(
+  query: string,
+  ids: string[],
+): string | null {
+  const needle = normalise(query);
+  if (!needle) return null;
+
+  return (
+    ids.find((id) => normalise(id) === needle) ??
+    ids.find((id) => normalise(id).startsWith(needle)) ??
+    null
+  );
+}
+
+function normalise(value: string): string {
+  return value.toUpperCase().replace(/[^0-9A-Z]/g, "");
+}
+
 export function sectionNeighbours(
   id: string,
   ids: string[],
@@ -48,5 +103,7 @@ function compareSections(left: string, right: string): number {
   const a = parseSection(left);
   const b = parseSection(right);
 
-  return a.level - b.level || a.number - b.number || a.suffix.localeCompare(b.suffix);
+  return (
+    a.level - b.level || a.number - b.number || a.suffix.localeCompare(b.suffix)
+  );
 }

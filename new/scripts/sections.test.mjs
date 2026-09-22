@@ -3,7 +3,9 @@ import test from "node:test";
 
 import { sections } from "../app/components/widget/seat-plan-data.ts";
 import {
+  findSectionByQuery,
   sectionLevel,
+  sectionLevelShift,
   sectionNeighbours,
   sectionOrder,
 } from "../app/lib/sections.ts";
@@ -67,4 +69,47 @@ test("orders Sections by level, then number, then suffix", () => {
 
 test("an unknown Section is rejected rather than guessed at", () => {
   assert.throws(() => sectionNeighbours("999", sectionIds), /Unknown Section/);
+});
+
+test("a level shift keeps the Section number", () => {
+  assert.equal(sectionLevelShift("104", sectionIds, 1), "204");
+  assert.equal(sectionLevelShift("104", sectionIds, -1), null);
+  assert.equal(sectionLevelShift("302", sectionIds, -1), "202");
+  assert.equal(sectionLevelShift("334", sectionIds, 1), null);
+});
+
+test("a level shift matches the suffix when the target has one", () => {
+  assert.equal(sectionLevelShift("201A/B", sectionIds, 1), "301A/B");
+  assert.equal(sectionLevelShift("301A/B", sectionIds, -1), "201A/B");
+});
+
+test("a level shift falls back to the nearest number", () => {
+  // There is no 231A, so 131A lands on the closest Level 2 Section.
+  const landed = sectionLevelShift("131A", sectionIds, 1);
+  assert.equal(sectionLevel(landed), 2);
+  assert.equal(landed, "231");
+});
+
+test("a level shift always lands on the target level", () => {
+  for (const section of sectionIds) {
+    for (const direction of [-1, 1]) {
+      const landed = sectionLevelShift(section, sectionIds, direction);
+      if (landed === null) continue;
+      assert.equal(sectionLevel(landed), sectionLevel(section) + direction);
+    }
+  }
+});
+
+test("a lookup ignores case and punctuation", () => {
+  assert.equal(findSectionByQuery("201A/B", sectionIds), "201A/B");
+  assert.equal(findSectionByQuery("201a-b", sectionIds), "201A/B");
+  assert.equal(findSectionByQuery("201ab", sectionIds), "201A/B");
+  assert.equal(findSectionByQuery(" 104 ", sectionIds), "104");
+  assert.equal(findSectionByQuery("", sectionIds), null);
+  assert.equal(findSectionByQuery("999", sectionIds), null);
+});
+
+test("a partial lookup returns the first Section that starts with it", () => {
+  assert.equal(findSectionByQuery("201A", sectionIds), "201A/B");
+  assert.equal(findSectionByQuery("20", sectionIds), "201A/B");
 });
