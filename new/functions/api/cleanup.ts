@@ -1,4 +1,8 @@
-import { orphansToDelete, type PendingObject } from "../lib/orphans.ts";
+import {
+  orphansToDelete,
+  photosUnderReview,
+  type PendingObject,
+} from "../lib/orphans.ts";
 import { json, type PagesContext } from "../lib/types.ts";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -45,6 +49,16 @@ export const onRequestPost = async ({
     );
   }
 
+  const underReview = await readOpenPullRequestPhotos(env);
+  if (!underReview) {
+    // Without the open pull requests we cannot tell an ignored submission from
+    // a rejected one, and guessing would delete someone's pending work.
+    return json(
+      { error: "Could not read the open pull requests, so nothing was swept." },
+      502,
+    );
+  }
+
   const pending: PendingObject[] = [];
   let cursor: string | undefined;
 
@@ -64,7 +78,7 @@ export const onRequestPost = async ({
 
   const orphans = orphansToDelete({
     pending,
-    referenced: published,
+    referenced: [...published, ...underReview],
     olderThanMs: olderThanDays * DAY_MS,
   });
 
@@ -77,9 +91,36 @@ export const onRequestPost = async ({
     olderThanDays,
     pending: pending.length,
     published: published.length,
+    underReview: underReview.length,
     orphans,
   });
 };
+
+/**
+ * Photos an open pull request still points at. A submission nobody has decided
+ * on yet must survive the sweep however old it gets, so that a late approval
+ * cannot publish a Contribution whose photo has already been deleted.
+ */
+async function readOpenPullRequestPhotos(
+  env: PagesContext["env"],
+): Promise<string[] | null> {
+  const api = env.GITHUB_API ?? "https://api.github.com";
+  const response = await fetch(
+    `${api}/repos/${env.GITHUB_REPO}/pulls?state=open&per_page=100`,
+    {
+      headers: {
+        authorization: `Bearer ${env.GITHUB_TOKEN}`,
+        accept: "application/vnd.github+json",
+        "user-agent": "bukitjalilstadium-cleanup",
+      },
+    },
+  );
+
+  if (!response.ok) return null;
+
+  const pullRequests = (await response.json()) as { body?: string | null }[];
+  return photosUnderReview(pullRequests);
+}
 
 async function readPublishedPhotos(
   request: Request,

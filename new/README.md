@@ -77,7 +77,12 @@ curl -sS -X POST https://bukitjalilstadium-1ms.pages.dev/api/cleanup \
   -d '{"olderThanDays": 30}'
 ```
 
-It is a dry run unless you pass `{"apply": true}`. It only deletes photos that no published Contribution points at, so a published photo is safe however old it is — publishing never moves a photo out of the pending area, the Contribution simply keeps pointing at it.
+It is a dry run unless you pass `{"apply": true}`. It only deletes a photo when **both** are true:
+
+- no published Contribution points at it, and
+- no **open pull request** points at it,
+
+and it is older than the threshold. So a photo is safe however long you take: publishing never moves a photo out of the pending area, and an undecided submission keeps its photos for as long as its pull request is open. Closing a pull request is what makes its photos sweepable.
 
 ## Styling
 
