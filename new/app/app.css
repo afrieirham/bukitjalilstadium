@@ -76,6 +76,11 @@ body {
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.488 0.243 264.376);
+  /* Section fills on the seat plan. A Section somebody has photographed is
+     tinted; one nobody has is left hollow. Tune these two to re-skin the map. */
+  --seat-filled: oklch(0.93 0.03 264);
+  --seat-filled-border: oklch(0.85 0.05 264);
+  --seat-filled-hover: oklch(0.88 0.06 264);
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
   --chart-3: oklch(0.546 0.245 262.881);
@@ -108,19 +113,50 @@ body {
   }
 }
 
+/* The standing area and the LRT marker: interactive, but not Sections. */
 .interactive-svg {
   @apply fill-card stroke-border stroke-2 hover:fill-primary/15 hover:stroke-primary active:cursor-move;
 }
 
-.interactive-svg[data-selected="true"] {
-  @apply fill-primary/20 stroke-primary;
+/* A Section on the seat plan.
+   Filled means somebody has photographed it, hollow means nobody has yet, solid
+   accent means it is the Section you selected. The selected fill is solid
+   rather than a tint so it cannot be mistaken for a photographed one, and the
+   state survives greyscale because the label inverts to the accent's
+   foreground and the stroke thickens. */
+.seat-section {
+  fill: var(--seat-filled);
+  stroke: var(--seat-filled-border);
+  stroke-width: 2;
+  cursor: pointer;
+  transition:
+    fill 150ms ease-out,
+    stroke 150ms ease-out;
 }
 
-.interactive-svg[data-empty="true"] {
-  @apply fill-card stroke-border opacity-40;
+.seat-section:hover {
+  fill: var(--seat-filled-hover);
+  stroke: var(--primary);
 }
 
-.interactive-svg[data-empty="true"]:hover,
-.interactive-svg[data-empty="true"]:focus-visible {
-  @apply fill-primary/10 opacity-70;
+.seat-section[data-empty="true"] {
+  fill: var(--card);
+  stroke: var(--border);
+  stroke-width: 1.5;
+}
+
+.seat-section[data-empty="true"]:hover {
+  fill: color-mix(in oklab, var(--primary) 10%, transparent);
+  stroke: var(--primary);
+}
+
+.seat-section[data-selected="true"] {
+  fill: var(--primary);
+  stroke: var(--primary);
+  stroke-width: 3;
+}
+
+.seat-section[data-selected="true"] + text {
+  fill: var(--primary-foreground);
+  font-weight: 600;
 }

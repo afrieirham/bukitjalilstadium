@@ -282,7 +282,7 @@ function SeatPlan(props: {
                     onSelect(section.id);
                   }
                 }}
-                className="interactive-svg cursor-pointer"
+                className="seat-section"
                 strokeLinejoin={section.roundJoin ? "round" : undefined}
               />
               <SectionLabel x={section.labelX} y={section.labelY}>
