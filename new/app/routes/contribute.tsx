@@ -45,7 +45,8 @@ export default function Contribute() {
   const [searchParams] = useSearchParams();
   const hydrated = useHydrated();
   const turnstileRef = useRef<HTMLDivElement>(null);
-  const getTurnstileToken = useTurnstile(turnstileRef);
+  const { getToken: getTurnstileToken, dispose: disposeTurnstile } =
+    useTurnstile(turnstileRef);
 
   const [chosenSection, setChosenSection] = useState<string | null>(null);
   const prefilled = sectionIds.find(
@@ -193,6 +194,9 @@ export default function Contribute() {
         return;
       }
 
+      // Retire the widget before its container is replaced by the thank-you
+      // view, or Turnstile is left holding a widget whose DOM has gone.
+      disposeTurnstile();
       setSubmitted(true);
     } catch (error) {
       setErrors({
