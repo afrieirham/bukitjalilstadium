@@ -187,6 +187,9 @@ finish() {
 APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 ENV_FILE="$APP_DIR/.dev.vars"
 
+# If anything unexpected fails, name the line instead of exiting quietly.
+trap 'printf "\n  ✗ failed at line %s: %s\n" "$LINENO" "$BASH_COMMAND" >&2' ERR
+
 TOTAL_STAGES=8
 
 banner "Contribution credentials"
@@ -268,7 +271,10 @@ say "Writing the bucket, the namespace and the site key into new/wrangler.jsonc.
 say "None of these are secret, and keeping them in git is what makes the"
 say "configuration reviewable."
 
-node - "$APP_DIR/wrangler.jsonc" "$TURNSTILE_SITE_KEY" "$R2_BUCKET" "$RATE_LIMIT_ID" <<'NODE'
+say "Patching $APP_DIR/wrangler.jsonc"
+
+patch_wrangler_config() {
+  node - "$APP_DIR/wrangler.jsonc" "$TURNSTILE_SITE_KEY" "$R2_BUCKET" "$RATE_LIMIT_ID" <<'NODE'
 const { readFileSync, writeFileSync } = require("node:fs");
 
 const [file, siteKey, bucket, kvId] = process.argv.slice(2);
@@ -308,6 +314,31 @@ if (parsed.kv_namespaces[0].id !== kvId) throw new Error("namespace id did not l
 writeFileSync(file, text);
 console.log("  validated new/wrangler.jsonc");
 NODE
+}
+
+show_bindings_snippet() {
+  say "Add these to new/wrangler.jsonc, just after compatibility_date:"
+  note "  \"r2_buckets\": [{ \"binding\": \"BUCKET\", \"bucket_name\": \"$R2_BUCKET\" }],"
+  note "  \"kv_namespaces\": [{ \"binding\": \"RATE_LIMIT\", \"id\": \"$RATE_LIMIT_ID\" }],"
+  say "and set this value in the same file:"
+  note "  \"TURNSTILE_SITE_KEY\": \"$TURNSTILE_SITE_KEY\""
+}
+
+if [[ ! -f "$APP_DIR/wrangler.jsonc" ]]; then
+  warn "new/wrangler.jsonc is missing, so it was left alone."
+  show_bindings_snippet
+  SKIPPED+=("write the bindings into new/wrangler.jsonc")
+elif ! command -v node >/dev/null 2>&1; then
+  warn "node is not on PATH, so new/wrangler.jsonc was left alone."
+  show_bindings_snippet
+  SKIPPED+=("write the bindings into new/wrangler.jsonc")
+elif patch_wrangler_config; then
+  note "  wrote new/wrangler.jsonc"
+else
+  warn "could not edit new/wrangler.jsonc automatically."
+  show_bindings_snippet
+  SKIPPED+=("write the bindings into new/wrangler.jsonc")
+fi
 
 say ""
 step "Commit and push, so Pages picks the configuration up:"
