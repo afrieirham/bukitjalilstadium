@@ -20,14 +20,20 @@ import { cn } from "~/lib/utils";
 const sectionIds = sections.map((section) => section.id);
 
 export function meta() {
+  const title = `Share a seat view | ${SITE_NAME}`;
+  const description =
+    "Share photos of the view from your seat at Stadium Bukit Jalil (TM Stadium Nasional). Every contribution is reviewed before it appears.";
+
   return [
-    { title: `Share a seat view | ${SITE_NAME}` },
-    {
-      name: "description",
-      content:
-        "Share photos of the view from your seat at Stadium Bukit Jalil (TM Stadium Nasional). Every contribution is reviewed before it appears.",
-    },
+    { title },
+    { name: "description", content: description },
     { tagName: "link", rel: "canonical", href: `${SITE_URL}/contribute` },
+    { property: "og:type", content: "website" },
+    { property: "og:site_name", content: SITE_NAME },
+    { property: "og:title", content: title },
+    { property: "og:description", content: description },
+    { property: "og:image", content: `${SITE_URL}/og.png` },
+    { name: "twitter:card", content: "summary_large_image" },
   ];
 }
 
