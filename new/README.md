@@ -89,6 +89,13 @@ A photo that no pull request knows about — someone uploaded and never submitte
 
 Because an open pull request protects its photos indefinitely, nothing is ever deleted out from under a submission you have not decided on. The trade-off is moderation debt, so the response also lists submissions that have been waiting longer than `staleAfterDays` (default 14), for you to triage. It reports them; it never acts on them.
 
+## Analytics
+
+Two trackers, both non-blocking, and neither reports from a preview deployment.
+
+- **Cloudflare Web Analytics** is enabled on the Pages project rather than in code, and Cloudflare injects its beacon. It only reports the production domain, so previews stay out of it.
+- **Umami** is self-hosted, and `Analytics` in the root layout loads it after hydration on the live host only. It is added by script rather than rendered into the markup because the same prerendered HTML is served by preview deployments, where it should not report.
+
 ## Styling
 
 This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
