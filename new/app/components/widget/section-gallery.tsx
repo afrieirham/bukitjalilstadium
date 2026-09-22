@@ -55,7 +55,7 @@ function SectionGalleryEmpty({ section }: { section: string }) {
   );
 }
 
-function PhotoCaption({ photo }: { photo: Contribution }) {
+export function PhotoCaption({ photo }: { photo: Contribution }) {
   const parts = [
     photo.date,
     photo.row ? `Row ${photo.row}` : null,
