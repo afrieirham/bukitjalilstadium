@@ -9,7 +9,32 @@ import {
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { collectReferencedPhotos } from "../app/lib/contributions.ts";
+/**
+ * Every photo object that a set of Contributions points at.
+ *
+ * Deliberately plain JavaScript with no TypeScript import: this runs as a
+ * build step under whatever Node the host provides, and Node only strips types
+ * from 22.18 onwards. The Functions can import TypeScript because a bundler
+ * handles them; a build script cannot.
+ */
+export function collectReferencedPhotos(contributions) {
+  return [...new Set(contributions.map((contribution) => contribution.photo))];
+}
+
+export function readContributions(dataRoot) {
+  if (!statSync(dataRoot, { throwIfNoEntry: false })?.isDirectory()) return [];
+
+  return readdirSync(dataRoot).flatMap((submissionId) => {
+    const submissionPath = path.join(dataRoot, submissionId);
+    if (!statSync(submissionPath).isDirectory()) return [];
+
+    return readdirSync(submissionPath)
+      .filter((file) => file.endsWith(".json"))
+      .map((file) =>
+        JSON.parse(readFileSync(path.join(submissionPath, file), "utf8")),
+      );
+  });
+}
 
 /**
  * Publishes the list of photo objects that committed Contributions point at, so
@@ -29,21 +54,6 @@ export function generateReferencedPhotos({ dataRoot, outFile }) {
   );
 
   return contributions.length;
-}
-
-function readContributions(dataRoot) {
-  if (!statSync(dataRoot, { throwIfNoEntry: false })?.isDirectory()) return [];
-
-  return readdirSync(dataRoot).flatMap((submissionId) => {
-    const submissionPath = path.join(dataRoot, submissionId);
-    if (!statSync(submissionPath).isDirectory()) return [];
-
-    return readdirSync(submissionPath)
-      .filter((file) => file.endsWith(".json"))
-      .map((file) =>
-        JSON.parse(readFileSync(path.join(submissionPath, file), "utf8")),
-      );
-  });
 }
 
 const isMain =

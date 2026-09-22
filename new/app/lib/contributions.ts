@@ -55,15 +55,6 @@ export function populatedSections(
   return new Set(contributions.map((item) => item.section));
 }
 
-/**
- * Every photo object that a set of Contributions points at. Anything in the
- * pending area that is not in this list was never published.
- */
-export function collectReferencedPhotos(
-  contributions: Contribution[],
-): string[] {
-  return [...new Set(contributions.map((item) => item.photo))];
-}
 
 /**
  * A Contributor is identified by their name together with their link, so the

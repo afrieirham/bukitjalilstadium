@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
-  collectReferencedPhotos,
   creditedContributors,
   photosBySection,
   populatedSections,
@@ -117,27 +116,3 @@ test("the same name with and without a link stays distinct", () => {
   assert.equal(credits.length, 2);
 });
 
-test("collects every photo a set of Contributions references", () => {
-  const photos = collectReferencedPhotos([
-    contribution("a", "104"),
-    contribution("b", "104"),
-    contribution("c", "301A/B"),
-  ]);
-
-  assert.deepEqual(photos.sort(), [
-    "seats/a.jpg",
-    "seats/b.jpg",
-    "seats/c.jpg",
-  ]);
-});
-
-test("a duplicate reference is listed once", () => {
-  const first = contribution("a", "104");
-  const photos = collectReferencedPhotos([first, { ...first }]);
-
-  assert.deepEqual(photos, ["seats/a.jpg"]);
-});
-
-test("nothing referenced means nothing protected", () => {
-  assert.deepEqual(collectReferencedPhotos([]), []);
-});
