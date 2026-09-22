@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 
+import { PageContainer } from "~/components/core/app-shell";
 import { contributions } from "~/data/contributions";
 import { creditedContributors, sectionSlug } from "~/lib/contributions";
 import { SITE_NAME, SITE_URL } from "~/lib/site";
@@ -30,7 +31,7 @@ export function meta() {
 
 export default function Contributors({ loaderData }: Route.ComponentProps) {
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
+    <PageContainer className="flex max-w-3xl flex-col gap-6">
       <header className="flex flex-col gap-3">
         <h1 className="text-2xl font-semibold">Contributors</h1>
         <p className="text-muted-foreground">
@@ -76,6 +77,6 @@ export default function Contributors({ loaderData }: Route.ComponentProps) {
           ))}
         </ul>
       )}
-    </main>
+    </PageContainer>
   );
 }

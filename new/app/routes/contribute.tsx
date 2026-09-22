@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 
 import { Link, useSearchParams } from "react-router";
 
+import { PageContainer } from "~/components/core/app-shell";
 import { Button, buttonVariants } from "~/components/core/button";
 import { Input } from "~/components/core/input";
 import { sections } from "~/components/widget/seat-plan-data";
@@ -20,7 +21,7 @@ import { cn } from "~/lib/utils";
 const sectionIds = sections.map((section) => section.id);
 
 export function meta() {
-  const title = `Share a seat view | ${SITE_NAME}`;
+  const title = `Share a photo | ${SITE_NAME}`;
   const description =
     "Share photos of the view from your seat at Stadium Bukit Jalil (TM Stadium Nasional). Every contribution is reviewed before it appears.";
 
@@ -215,7 +216,7 @@ export default function Contribute() {
 
   if (submitted) {
     return (
-      <main className="mx-auto flex max-w-2xl flex-col items-start gap-4 px-4 py-16">
+      <PageContainer className="flex max-w-2xl flex-col items-start gap-4 py-16">
         <h1 className="text-2xl font-semibold">Thank you</h1>
         <p className="text-muted-foreground">
           Your contribution is pending review. Once it is approved it appears on
@@ -224,14 +225,14 @@ export default function Contribute() {
         <Link to={section ? `/${sectionSlug(section)}` : "/"} className={cn(buttonVariants())}>
           Back to {section ? `Section ${section}` : "the seat map"}
         </Link>
-      </main>
+      </PageContainer>
     );
   }
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+    <PageContainer className="flex max-w-2xl flex-col gap-6">
       <header className="flex flex-col gap-3">
-        <h1 className="text-2xl font-semibold">Share a seat view</h1>
+        <h1 className="text-2xl font-semibold">Share a photo</h1>
         <p className="text-muted-foreground">
           Photos help the next person choose a seat. Every contribution is
           reviewed before it appears, and there is no account to create.
@@ -379,7 +380,7 @@ export default function Contribute() {
           </span>
         </div>
       </form>
-    </main>
+    </PageContainer>
   );
 }
 
