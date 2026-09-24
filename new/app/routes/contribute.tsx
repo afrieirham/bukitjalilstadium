@@ -218,7 +218,7 @@ export default function Contribute() {
     return (
       <PageContainer className="flex max-w-2xl flex-col items-start gap-4 py-16">
         <h1 className="text-2xl font-semibold">Thank you</h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground max-w-prose">
           Your contribution is pending review. Once it is approved it appears on
           the Section page and in the contributors list.
         </p>
@@ -233,7 +233,7 @@ export default function Contribute() {
     <PageContainer className="flex max-w-2xl flex-col gap-6">
       <header className="flex flex-col gap-3">
         <h1 className="text-2xl font-semibold">Share a photo</h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground max-w-prose">
           Photos help the next person choose a seat. Every contribution is
           reviewed before it appears, and there is no account to create.
         </p>
@@ -271,7 +271,7 @@ export default function Contribute() {
               addFiles(event.target.files);
               event.target.value = "";
             }}
-            className="text-sm"
+            className="text-muted-foreground file:bg-muted file:text-foreground hover:file:bg-accent text-sm file:mr-3 file:rounded-md file:border-0 file:px-3 file:py-1.5 file:text-sm file:font-medium file:transition-colors"
           />
           {photos.length > 0 && (
             <ul className="mt-2 flex flex-col gap-2">

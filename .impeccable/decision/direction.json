@@ -1,0 +1,200 @@
+{
+  "title": "Choose the visual world",
+  "question": "The roll assigned The Bill. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "The Bill",
+      "kicker": "THE ROLL",
+      "lineage": "1960s-70s gig handbills & KL risograph show posters",
+      "thesis": "The whole site as one printed show bill for the stadium: every Section a line on the bill, its view the plate.",
+      "palette": ["#14110f", "#e03a1e", "#1b3ea8", "#f4f1ea"],
+      "materials": ["split-fountain ink", "uncoated stock", "overprint registration"],
+      "viewport": "A bill masthead ruled across the top, the selected Section's view as the big halftone plate, and the 104 Sections as a ruled numbered column.",
+      "risk": "Display type on an Operate surface: if the bill voice leaks into numbers and labels, the site stops being scannable.",
+      "raised": [
+        {
+          "from": "challenger-emission-line",
+          "raise": "State is line form before hue: empty, photographed, and selected Sections differ by rule weight, dash, and doubling, so the bill reads in greyscale."
+        },
+        {
+          "from": "challenger-orizuru",
+          "raise": "One continuous sheet: the whole surface is a single printed page, never a mosaic of floating rounded cards, so nothing drifts off the bill."
+        },
+        {
+          "from": "challenger-console",
+          "raise": "The selected Section swells forward in scale and ink while the rest recede, a depth cue that needs no motion."
+        }
+      ],
+      "wireframe": {
+        "cols": 12,
+        "rows": 8,
+        "regions": [
+          { "label": "bill masthead", "x": 0, "y": 0, "w": 12, "h": 1, "accent": true },
+          { "label": "view plate", "x": 0, "y": 1, "w": 8, "h": 7 },
+          { "label": "section rail", "x": 8, "y": 1, "w": 4, "h": 7 }
+        ]
+      }
+    },
+    {
+      "id": "model-pick",
+      "label": "The Ticket Stub",
+      "kicker": "IMPECCABLE'S PICK",
+      "lineage": "ticket-stub and e-ticket ephemera",
+      "thesis": "Every Section read as its ticket stub, the view as what the stub saw.",
+      "palette": ["#f7f5ef", "#141414", "#c8361f", "#1f4fa0"],
+      "materials": ["thermal print", "perforation", "barcode ink"],
+      "viewport": "A stub masthead of Section, Row and Seat fields, with the view plate tearing off below it.",
+      "risk": "Also the direction most runs in this category land on: familiar and effective, but not out of distribution.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 8,
+        "regions": [
+          { "label": "stub header", "x": 0, "y": 0, "w": 12, "h": 2, "accent": true },
+          { "label": "view plate", "x": 0, "y": 2, "w": 7, "h": 6 },
+          { "label": "stub fields", "x": 7, "y": 2, "w": 5, "h": 6 }
+        ]
+      }
+    },
+    {
+      "id": "challenger-split-flap",
+      "label": "Concourse Split-Flap Board",
+      "verdict": "competitive",
+      "lineage": "airport and train split-flap departure boards",
+      "thesis": "The stadium board: Sections as ruled rows that flip to the selected view.",
+      "palette": ["#0d0d0d", "#f2f2f0", "#e0a422"],
+      "materials": ["matte flaps", "brushed steel", "amber row lamps"],
+      "viewport": "A fixed grid of ruled rows with the open Section flipping to its photo.",
+      "case": "Fuses cleanly: Sections map to fixed rows and columns. Loses narrowly on audience fit - the fan is at a gig, not at a gate.",
+      "risk": "Reads as transit cosplay when the flap motion is decorative.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 8,
+        "regions": [
+          { "label": "board frame", "x": 0, "y": 0, "w": 12, "h": 8 },
+          { "label": "ruled rows", "x": 0, "y": 1, "w": 8, "h": 7 },
+          { "label": "flip panel", "x": 8, "y": 1, "w": 4, "h": 7, "accent": true }
+        ]
+      }
+    },
+    {
+      "id": "challenger-cyclorama",
+      "label": "Cyclorama Dawn",
+      "verdict": "competitive",
+      "lineage": "stage-lighting cyclorama washes",
+      "thesis": "The concert's own light: content stacked in horizon bands from blackout to day.",
+      "palette": ["#05070c", "#1d3fb0", "#d4658a", "#f7f4ee"],
+      "materials": ["washed light", "cobalt gel", "rose gel"],
+      "viewport": "A low cobalt horizon band under a dark sky, the view emerging into daylight.",
+      "case": "Holds the concert world strongly; the atmosphere band competes with the metadata, so product clarity loses a step.",
+      "risk": "Atmospheric banding can bury the data a fan came for.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 8,
+        "regions": [
+          { "label": "sky", "x": 0, "y": 0, "w": 12, "h": 5 },
+          { "label": "horizon band", "x": 0, "y": 5, "w": 12, "h": 1, "accent": true },
+          { "label": "ground meta", "x": 0, "y": 6, "w": 12, "h": 2 }
+        ]
+      }
+    },
+    {
+      "id": "challenger-kraftwerk",
+      "label": "Man-Machine Grid",
+      "verdict": "competitive",
+      "lineage": "Kraftwerk-era neon schematic",
+      "thesis": "Every Section a node wired on one strict modular grid.",
+      "palette": ["#000000", "#f4f4f2", "#e23b2e", "#f2c200"],
+      "materials": ["flat enamel", "neon rule"],
+      "viewport": "A tight modular grid with orthogonal connectors running from Section numbers to their plates.",
+      "case": "Keeps product clarity with a diagram-native layout; audience identification is generic-retro rather than gig-specific.",
+      "risk": "Reads as a synth album cover if the grid is not strict.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 8,
+        "regions": [
+          { "label": "node", "x": 0, "y": 0, "w": 3, "h": 3 },
+          { "label": "node", "x": 3, "y": 0, "w": 3, "h": 3 },
+          { "label": "node", "x": 6, "y": 0, "w": 6, "h": 3 },
+          { "label": "connector rule", "x": 0, "y": 3, "w": 12, "h": 1, "accent": true },
+          { "label": "detail plate", "x": 0, "y": 4, "w": 12, "h": 4 }
+        ]
+      }
+    },
+    {
+      "id": "challenger-emission-line",
+      "label": "Emission-Line Rail",
+      "verdict": "declined",
+      "lineage": "laboratory spectrogram",
+      "palette": ["#2b2b2b", "#e8e4d8", "#d9a441"],
+      "materials": ["hairline emission", "banded continuum"],
+      "case": "Fuses poorly: a spectrogram is not a fan's world.",
+      "kept": "State as line form rather than colour.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 8,
+        "regions": [
+          { "label": "calibrated rail", "x": 0, "y": 0, "w": 12, "h": 1, "accent": true },
+          { "label": "plates", "x": 0, "y": 1, "w": 12, "h": 7 }
+        ]
+      }
+    },
+    {
+      "id": "challenger-orizuru",
+      "label": "Orizuru Sequence",
+      "verdict": "declined",
+      "lineage": "origami crane folding",
+      "palette": ["#d63b2f", "#f4efe4", "#1b1b1b"],
+      "materials": ["vermilion washi", "fold-white creases"],
+      "case": "Fuses poorly: folding steps do not carry a browse-and-compare task.",
+      "kept": "One continuous sheet with no floating cards.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 8,
+        "regions": [
+          { "label": "one sheet", "x": 2, "y": 0, "w": 8, "h": 8, "accent": true }
+        ]
+      }
+    },
+    {
+      "id": "challenger-console",
+      "label": "Console Void",
+      "verdict": "declined",
+      "lineage": "sixth-generation system menu",
+      "palette": ["#0a0f18", "#e9eef7", "#e0a45c"],
+      "materials": ["fog depth", "ambient light"],
+      "case": "Fuses poorly: game-console atmosphere is not the ticket-decision scene.",
+      "kept": "The selected object swells forward, the rest recede.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 8,
+        "regions": [
+          { "label": "void", "x": 0, "y": 0, "w": 12, "h": 8 },
+          { "label": "tower", "x": 3, "y": 2, "w": 6, "h": 6, "accent": true }
+        ]
+      }
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code", "toggle": false },
+  "canon": true,
+  "canonCard": {
+    "label": "The Category Standard",
+    "thesis": "The expected thing, executed impeccably: a search box, a photo grid, and a seat map.",
+    "palette": ["#ffffff", "#111111", "#2f5bd6"],
+    "materials": ["flat panels", "system sans"],
+    "viewport": "Search first, then a photo grid, then a seat map, at full craft.",
+    "risk": "Indistinguishable from the competition by design.",
+    "wireframe": {
+      "cols": 12,
+      "rows": 8,
+      "regions": [
+        { "label": "nav", "x": 0, "y": 0, "w": 12, "h": 1 },
+        { "label": "search", "x": 0, "y": 1, "w": 12, "h": 1, "accent": true },
+        { "label": "photo grid", "x": 0, "y": 2, "w": 8, "h": 6 },
+        { "label": "seat map", "x": 8, "y": 2, "w": 4, "h": 6 }
+      ]
+    }
+  },
+  "steer": true
+}

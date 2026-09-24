@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 
+import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
+  Link,
   useSearchParams,
   type ShouldRevalidateFunctionArgs,
 } from "react-router";
 
-import { PageContainer } from "~/components/core/app-shell";
-import { Button } from "~/components/core/button";
-import { Input } from "~/components/core/input";
-import { sections } from "~/components/widget/seat-plan-data";
 import { SectionLocator } from "~/components/widget/section-locator";
-import { SectionPhotoViewer } from "~/components/widget/section-photo-viewer";
+import { sections } from "~/components/widget/seat-plan-data";
 import { contributions } from "~/data/contributions";
 import { useHydrated } from "~/hooks/use-hydrated";
 import {
@@ -24,8 +23,9 @@ import {
   sectionLevel,
   sectionLevelShift,
   sectionNeighbours,
+  sectionOrder,
 } from "~/lib/sections";
-import { SITE_NAME, SITE_URL } from "~/lib/site";
+import { SITE_NAME, SITE_URL, photoUrl } from "~/lib/site";
 import { cn } from "~/lib/utils";
 
 import type { Route } from "./+types/home";
@@ -64,9 +64,14 @@ const stadiumSchema = {
 };
 
 export function loader() {
+  const grouped = photosBySection(contributions);
+
   return {
-    photosBySection: Object.fromEntries(photosBySection(contributions)),
+    photosBySection: Object.fromEntries(grouped),
     populatedSections: [...populatedSections(contributions)],
+    counts: Object.fromEntries(
+      [...grouped].map(([id, list]) => [id, list.length]),
+    ),
   };
 }
 
@@ -128,63 +133,227 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   useSectionKeyboard({ selected, onSelect: selectSection });
 
+  const level = selected ? sectionLevel(selected) : 2;
+  const coverage = Math.round(
+    (loaderData.populatedSections.length / sectionIds.length) * 100,
+  );
+  const onLevel = sectionOrder(
+    sectionIds.filter((id) => sectionLevel(id) === level),
+  );
+
   return (
-    <div>
+    <div className="home">
+      <h1 className="sr-only">
+        Seat views from every Section at Stadium Bukit Jalil
+      </h1>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(stadiumSchema) }}
       />
 
-      <PageContainer className="flex flex-col gap-4">
-        <header className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          <h1 className="text-xl font-semibold">
-            Seat views from every Section
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            {sectionIds.length} Sections · {loaderData.populatedSections.length}{" "}
-            with a photo
-          </p>
-        </header>
+      <div className="home-nodes">
+        {([1, 2, 3] as const).map((n) => (
+          <button
+            key={n}
+            type="button"
+            className="home-node"
+            data-on={level === n ? "" : undefined}
+            onClick={() => {
+              const first =
+                sectionIds.find(
+                  (id) => sectionLevel(id) === n && photographed.has(id),
+                ) ?? sectionIds.find((id) => sectionLevel(id) === n);
+              if (first) selectSection(first);
+            }}
+          >
+            Level {n}
+            <em>
+              {loaderData.populatedSections.filter(
+                (id) => sectionLevel(id) === n,
+              ).length}{" "}
+              photographed
+            </em>
+          </button>
+        ))}
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
-          <aside className="flex flex-col gap-4 lg:order-2">
-            <FindSection onSelect={selectSection} />
+        <FindSection onSelect={selectSection} />
 
-            <section className="border-border flex flex-col gap-2 rounded-lg border p-3">
-              <h2 className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-                Where this is
-              </h2>
-              <SectionLocator
-                populated={loaderData.populatedSections}
-                selected={selected}
-                onSelect={selectSection}
-              />
-              <p className="text-muted-foreground text-xs">
-                Rings are Levels 1, 2 and 3, from the pitch outward.
-              </p>
-            </section>
+        <span className="home-cov">
+          <b>{loaderData.populatedSections.length}</b> / {sectionIds.length}{" "}
+          Sections photographed
+        </span>
+      </div>
 
-            <SectionCard
-              selected={selected}
-              photos={photos}
-              onSelect={selectSection}
-            />
-          </aside>
+      <div className="home-rule" aria-hidden>
+        <span style={{ width: `${coverage}%` }} />
+      </div>
 
-          <div className="lg:order-1">
-            {selected ? (
-              <SectionPhotoViewer
-                key={selected}
-                section={selected}
-                photos={photos}
-              />
+      <div className="home-body">
+        <section className="home-stage">
+          <div className="home-photo">
+            {selected && photos[0] ? (
+              <SectionPhoto key={selected} section={selected} photos={photos} />
             ) : (
-              <PhotoPlaceholder />
+              <div className="home-nophoto">
+                {selected ? (
+                  <>
+                    <p>No photo for Section {selected} yet.</p>
+                    <p className="text-sm">
+                      If you have one, it would help the next person decide.{" "}
+                      <Link
+                        to={`/contribute?section=${sectionSlug(selected)}`}
+                        className="text-primary underline-offset-4 hover:underline"
+                      >
+                        Share a photo
+                      </Link>
+                    </p>
+                  </>
+                ) : (
+                  <p>
+                    Pick a Section on the bowl, or type its number, to see the
+                    view from it.
+                  </p>
+                )}
+              </div>
             )}
           </div>
-        </div>
-      </PageContainer>
+          <div className="home-cap">
+            <b>Section {selected ?? "—"}</b>
+            <span>Level {selected ? sectionLevel(selected) : "—"}</span>
+            <span>
+              {photos.length} photo{photos.length === 1 ? "" : "s"}
+            </span>
+            <span className="home-date">{photos[0]?.date ?? "undated"}</span>
+          </div>
+        </section>
+
+        <aside className="home-rail">
+          <div className="home-map">
+            <SectionLocator
+              populated={loaderData.populatedSections}
+              selected={selected}
+              onSelect={selectSection}
+            />
+          </div>
+
+          <div className="home-readout">
+            <div>
+              <span>Section</span>
+              <b>{selected ?? "—"}</b>
+            </div>
+            <div>
+              <span>Level</span>
+              <b>{selected ? sectionLevel(selected) : "—"}</b>
+            </div>
+            <div>
+              <span>Photos</span>
+              <b>{photos.length}</b>
+            </div>
+          </div>
+
+          {selected && (
+            <div className="home-jump">
+              <button
+                type="button"
+                onClick={() => {
+                  const { left } = sectionNeighbours(selected, sectionIds);
+                  selectSection(left);
+                }}
+              >
+                <HugeiconsIcon icon={ArrowLeft01Icon} aria-hidden />
+                {sectionNeighbours(selected, sectionIds).left}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const { right } = sectionNeighbours(selected, sectionIds);
+                  selectSection(right);
+                }}
+              >
+                {sectionNeighbours(selected, sectionIds).right}
+                <HugeiconsIcon icon={ArrowRight01Icon} aria-hidden />
+              </button>
+            </div>
+          )}
+
+          <ol className="home-list">
+            {onLevel.map((id) => (
+              <li key={id}>
+                <button
+                  type="button"
+                  className="home-row"
+                  data-on={id === selected ? "" : undefined}
+                  style={{ opacity: photographed.has(id) ? 1 : 0.7 }}
+                  onClick={() => selectSection(id)}
+                >
+                  <b>{id}</b>
+                  <span>Level {sectionLevel(id)}</span>
+                  <span>{loaderData.counts[id] ?? 0} ph.</span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </aside>
+      </div>
     </div>
+  );
+}
+
+/**
+ * One Section's photo at the size the view deserves, with the Section's other
+ * photos as a thin strip under it. The parent keys this by Section so a new
+ * Section starts at its first photo.
+ */
+function SectionPhoto({
+  section,
+  photos,
+}: {
+  section: string;
+  photos: Contribution[];
+}) {
+  const [chosen, setChosen] = useState(0);
+  const active = Math.min(chosen, photos.length - 1);
+  const photo = photos[active];
+
+  return (
+    <figure className="flex h-full min-h-0 flex-col">
+      <div className="min-h-0 flex-1 overflow-hidden">
+        <img
+          src={photoUrl(photo.photo)}
+          alt={photo.caption ?? `View from Section ${section}`}
+          className="home-shot"
+        />
+      </div>
+      {photos.length > 1 && (
+        <div
+          className="border-border flex shrink-0 gap-2 border-t p-2"
+          role="group"
+          aria-label={`Photos of Section ${section}`}
+        >
+          {photos.map((item, position) => (
+            <button
+              key={item.submissionId}
+              type="button"
+              aria-current={position === active ? "true" : undefined}
+              aria-label={`Photo ${position + 1} of ${photos.length}`}
+              onClick={() => setChosen(position)}
+              className={cn(
+                "overflow-hidden rounded border-2 leading-none transition-colors",
+                position === active
+                  ? "border-primary"
+                  : "border-transparent hover:border-muted-foreground",
+              )}
+            >
+              <img
+                src={photoUrl(item.photo)}
+                alt=""
+                className="bg-muted h-12 w-16 object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      )}
+    </figure>
   );
 }
 
@@ -194,7 +363,7 @@ function FindSection({ onSelect }: { onSelect: (section: string) => void }) {
 
   return (
     <form
-      className="border-border flex flex-col gap-2 rounded-lg border p-3"
+      className="home-find"
       onSubmit={(event) => {
         event.preventDefault();
 
@@ -209,115 +378,25 @@ function FindSection({ onSelect }: { onSelect: (section: string) => void }) {
         onSelect(found);
       }}
     >
-      <label
-        htmlFor="find-section"
-        className="text-muted-foreground text-xs font-medium tracking-wide uppercase"
-      >
-        Find your Section
-      </label>
-      <div className="flex gap-2">
-        <Input
-          id="find-section"
-          value={value}
-          placeholder="201A-B"
-          aria-invalid={invalid}
-          onChange={(event) => {
-            setValue(event.target.value);
-            setInvalid(false);
-          }}
-        />
-        <Button type="submit">Open</Button>
-      </div>
-      <p
-        className={cn(
-          "text-xs",
-          invalid ? "text-destructive" : "text-muted-foreground",
-        )}
-      >
-        {invalid
-          ? "No Section matches that."
-          : "The Section from your ticket, or tap the bowl below."}
-      </p>
+      <input
+        value={value}
+        placeholder="Find your Section — 201A-B"
+        aria-label="Find your Section"
+        aria-invalid={invalid}
+        aria-describedby={invalid ? "home-find-error" : undefined}
+        data-invalid={invalid ? "" : undefined}
+        onChange={(event) => {
+          setValue(event.target.value);
+          setInvalid(false);
+        }}
+      />
+      <button type="submit">Find</button>
+      {invalid && (
+        <span id="home-find-error" role="alert" className="home-error">
+          No Section matches that. Check the number on your ticket.
+        </span>
+      )}
     </form>
-  );
-}
-
-function SectionCard({
-  selected,
-  photos,
-  onSelect,
-}: {
-  selected: string | null;
-  photos: Contribution[];
-  onSelect: (section: string) => void;
-}) {
-  if (!selected) {
-    return (
-      <section className="border-border text-muted-foreground rounded-lg border border-dashed p-4 text-sm">
-        Pick a Section on the bowl, or type its number, to see the view from it.
-      </section>
-    );
-  }
-
-  const { left, right } = sectionNeighbours(selected, sectionIds);
-
-  return (
-    <section className="border-border flex flex-col gap-3 rounded-lg border p-4">
-      <div>
-        <h2 className="text-lg font-semibold">Section {selected}</h2>
-        <p className="text-muted-foreground text-sm">
-          Level {sectionLevel(selected)} ·{" "}
-          {photos.length
-            ? `${photos.length} photo${photos.length > 1 ? "s" : ""}`
-            : "no photo yet"}
-        </p>
-      </div>
-
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          className="flex-1"
-          onClick={() => onSelect(left)}
-        >
-          ← {left}
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="flex-1"
-          onClick={() => onSelect(right)}
-        >
-          {right} →
-        </Button>
-      </div>
-
-      <p className="text-muted-foreground flex flex-wrap items-center gap-1 text-xs">
-        <Key>←</Key>
-        <Key>→</Key>
-        <span>change Section</span>
-        <span className="mx-1">·</span>
-        <Key>↑</Key>
-        <Key>↓</Key>
-        <span>change Level</span>
-      </p>
-    </section>
-  );
-}
-
-function Key({ children }: { children: React.ReactNode }) {
-  return (
-    <kbd className="border-border bg-muted rounded border px-1.5 py-0.5 font-sans text-[11px]">
-      {children}
-    </kbd>
-  );
-}
-
-function PhotoPlaceholder() {
-  return (
-    <div className="border-border bg-muted/40 text-muted-foreground flex min-h-72 items-center justify-center rounded-lg border border-dashed p-8 text-center text-sm">
-      Pick a Section to see the view from it.
-    </div>
   );
 }
 
