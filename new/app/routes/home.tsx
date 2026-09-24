@@ -259,7 +259,7 @@ function SectionCard({
     );
   }
 
-  const { previous, next } = sectionNeighbours(selected, sectionIds);
+  const { left, right } = sectionNeighbours(selected, sectionIds);
 
   return (
     <section className="border-border flex flex-col gap-3 rounded-lg border p-4">
@@ -278,17 +278,17 @@ function SectionCard({
           variant="outline"
           size="sm"
           className="flex-1"
-          onClick={() => onSelect(previous)}
+          onClick={() => onSelect(left)}
         >
-          ← {previous}
+          ← {left}
         </Button>
         <Button
           variant="outline"
           size="sm"
           className="flex-1"
-          onClick={() => onSelect(next)}
+          onClick={() => onSelect(right)}
         >
-          {next} →
+          {right} →
         </Button>
       </div>
 
@@ -350,8 +350,8 @@ function useSectionKeyboard({
 
       if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
         event.preventDefault();
-        const { previous, next } = sectionNeighbours(current, sectionIds);
-        onSelect(event.key === "ArrowLeft" ? previous : next);
+        const { left, right } = sectionNeighbours(current, sectionIds);
+        onSelect(event.key === "ArrowLeft" ? left : right);
         return;
       }
 

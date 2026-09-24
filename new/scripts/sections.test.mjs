@@ -19,42 +19,42 @@ test("a Section's level is its leading digit", () => {
   assert.equal(sectionLevel("334"), 3);
 });
 
-test("neighbours follow the ring the legacy site linked", () => {
+test("neighbours match the left/right the legacy site linked", () => {
   const expected = [
-    ["101", "134", "102"],
-    ["131A", "131", "132"],
-    ["201A/B", "234", "202"],
-    ["212A/B", "211", "213"],
-    ["301A/B", "334", "302"],
-    ["334", "333", "301A/B"],
+    ["101", "102", "134"],
+    ["131A", "132", "131"],
+    ["201A/B", "202", "234"],
+    ["212A/B", "213", "211"],
+    ["301A/B", "302", "334"],
+    ["334", "301A/B", "333"],
   ];
 
-  for (const [section, previous, next] of expected) {
+  for (const [section, left, right] of expected) {
     assert.deepEqual(sectionNeighbours(section, sectionIds), {
-      previous,
-      next,
+      left,
+      right,
     });
   }
 });
 
 test("every Section has both neighbours and they stay within its level", () => {
   for (const section of sectionIds) {
-    const { previous, next } = sectionNeighbours(section, sectionIds);
-    assert.equal(sectionLevel(previous), sectionLevel(section));
-    assert.equal(sectionLevel(next), sectionLevel(section));
-    assert.notEqual(previous, section);
-    assert.notEqual(next, section);
+    const { left, right } = sectionNeighbours(section, sectionIds);
+    assert.equal(sectionLevel(left), sectionLevel(section));
+    assert.equal(sectionLevel(right), sectionLevel(section));
+    assert.notEqual(left, section);
+    assert.notEqual(right, section);
   }
 });
 
-test("following next around a level returns to the start", () => {
+test("following left around a level returns to the start", () => {
   const levelOne = sectionIds.filter((id) => sectionLevel(id) === 1);
   const visited = new Set();
   let current = "101";
 
   for (let step = 0; step < levelOne.length; step += 1) {
     visited.add(current);
-    current = sectionNeighbours(current, sectionIds).next;
+    current = sectionNeighbours(current, sectionIds).left;
   }
 
   assert.equal(current, "101");
