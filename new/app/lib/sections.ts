@@ -69,10 +69,16 @@ function normalise(value: string): string {
   return value.toUpperCase().replace(/[^0-9A-Z]/g, "");
 }
 
+/**
+ * The Sections either side of this one around its Level's ring. The ring runs
+ * in ascending number order, and `left` follows it while `right` runs against
+ * it — the same sides the legacy site's left/right links used, so the arrows
+ * point the way they always have.
+ */
 export function sectionNeighbours(
   id: string,
   ids: string[],
-): { previous: string; next: string } {
+): { left: string; right: string } {
   const level = sectionLevel(id);
   const ring = sectionOrder(
     ids.filter((other) => sectionLevel(other) === level),
@@ -82,8 +88,8 @@ export function sectionNeighbours(
   if (index === -1) throw new Error(`Unknown Section: ${id}`);
 
   return {
-    previous: ring[(index - 1 + ring.length) % ring.length],
-    next: ring[(index + 1) % ring.length],
+    left: ring[(index + 1) % ring.length],
+    right: ring[(index - 1 + ring.length) % ring.length],
   };
 }
 

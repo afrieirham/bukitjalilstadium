@@ -59,7 +59,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
 }
 
 export default function Section({ loaderData }: Route.ComponentProps) {
-  const { section, photos, previous, next } = loaderData;
+  const { section, photos, left, right } = loaderData;
   const title = sectionTitle(section);
   const description = sectionDescription(section);
   const contributeHref = `/contribute?section=${sectionSlug(section)}`;
@@ -80,8 +80,8 @@ export default function Section({ loaderData }: Route.ComponentProps) {
       </header>
 
       <nav className="flex items-center justify-between gap-4">
-        <SectionLink slug={sectionSlug(previous)} label={previous} direction="previous" />
-        <SectionLink slug={sectionSlug(next)} label={next} direction="next" />
+        <SectionLink slug={sectionSlug(left)} label={left} side="left" />
+        <SectionLink slug={sectionSlug(right)} label={right} side="right" />
       </nav>
 
       <SectionGallery
@@ -126,26 +126,26 @@ export default function Section({ loaderData }: Route.ComponentProps) {
 function SectionLink({
   slug,
   label,
-  direction,
+  side,
 }: {
   slug: string;
   label: string;
-  direction: "previous" | "next";
+  side: "left" | "right";
 }) {
-  const isNext = direction === "next";
+  const isRight = side === "right";
 
   return (
     <Link
       to={`/${slug}`}
-      rel={direction}
+      rel={isRight ? "prev" : "next"}
       className={cn(
         buttonVariants({ variant: "outline", size: "sm" }),
-        isNext && "ml-auto",
+        isRight && "ml-auto",
       )}
     >
-      {!isNext && <HugeiconsIcon icon={ArrowLeft01Icon} />}
+      {!isRight && <HugeiconsIcon icon={ArrowLeft01Icon} />}
       Section {label}
-      {isNext && <HugeiconsIcon icon={ArrowRight01Icon} />}
+      {isRight && <HugeiconsIcon icon={ArrowRight01Icon} />}
     </Link>
   );
 }
