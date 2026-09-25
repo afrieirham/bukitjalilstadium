@@ -44,12 +44,15 @@ STORY: The visitor understands in one glance that the map shows where photos
 exist, picks their Section by number or by tapping the bowl, and sees the real
 view. The contributor understands their photo will appear the same way.
 
-FIRST VIEWPORT: A ruled masthead (wordmark, stadium name, nav, yellow CTA), a
-level node bar with a find field and a coverage meter under a yellow rule, then a
-two-column body filling the remaining height: the true photo filling the left
-with a caption strip beneath it, and a fixed rail on the right holding the map
-(always visible), a three-cell readout, prev/next Section, and a ruled Section
-list that scrolls inside itself. The page itself never scrolls.
+FIRST VIEWPORT: A ruled masthead (wordmark, stadium name, nav, yellow CTA), then
+a level node bar. Below it a two-column body filling the remaining height. With
+no Section chosen, the left holds the hero — the title at display size under a
+yellow rule, a supporting line, and the find field — and the top-bar find field
+is hidden so there is one search control; the rail holds the map (always
+visible). Once a Section is chosen the left is the true photo with a caption
+strip beneath it, the top-bar find field returns, and the rail adds a three-cell
+readout, prev/next Section, and a ruled Section list that scrolls inside itself.
+The page itself never scrolls.
 
 FORM: Post-roll pivot. The user rejected the dealt world and pinned "elevate,
 don't replace" plus a black-and-yellow signage palette; this is a refinement of

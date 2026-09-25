@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+
+import { Cancel01Icon, Menu01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { Link, NavLink, useLocation } from "react-router";
 
 import { buttonVariants } from "~/components/core/button";
@@ -9,6 +13,21 @@ const NAV = [
 ];
 
 function SiteHeader() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Let Escape dismiss the panel without leaving the page. Links inside the
+  // panel close it themselves, so there is no route-change effect to sync.
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setMenuOpen(false);
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
+
   return (
     <header className="border-border bg-background sticky top-0 z-30 border-b">
       <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-3 px-3 sm:px-4">
@@ -24,7 +43,7 @@ function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="ml-auto flex shrink-0 items-center gap-0.5 sm:gap-1">
+        <nav className="ml-auto hidden shrink-0 items-center gap-0.5 sm:flex sm:gap-1">
           {NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -51,7 +70,66 @@ function SiteHeader() {
             <span className="sm:hidden">Share</span>
           </Link>
         </nav>
+
+        <button
+          type="button"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-expanded={menuOpen}
+          aria-controls="site-nav"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          className="text-muted-foreground hover:text-foreground hover:bg-muted/60 ml-auto rounded-md p-2 transition-colors sm:hidden"
+        >
+          <HugeiconsIcon
+            icon={menuOpen ? Cancel01Icon : Menu01Icon}
+            className="size-5"
+          />
+        </button>
       </div>
+
+      {menuOpen && (
+        <>
+          <button
+            type="button"
+            aria-label="Close menu"
+            onClick={() => setMenuOpen(false)}
+            className="bg-black/60 fixed inset-x-0 top-14 bottom-0 z-40 cursor-default sm:hidden"
+          />
+          <nav
+            id="site-nav"
+            className="border-border bg-card absolute inset-x-0 top-full z-50 border-b sm:hidden"
+          >
+            {NAV.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === "/"}
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  cn(
+                    "border-border hover:bg-muted/60 block border-b px-4 py-3 text-sm transition-colors",
+                    isActive
+                      ? "text-primary font-medium"
+                      : "text-muted-foreground hover:text-foreground",
+                  )
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
+
+            <Link
+              to="/contribute"
+              onClick={() => setMenuOpen(false)}
+              className={cn(
+                buttonVariants({ size: "sm" }),
+                "m-4 flex justify-center",
+              )}
+            >
+              Share a photo
+            </Link>
+          </nav>
+        </>
+      )}
     </header>
   );
 }

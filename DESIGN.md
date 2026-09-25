@@ -70,23 +70,29 @@ held to `max-w-prose` (65ch). No gradient text; emphasis is weight and size.
 ## Composition
 
 **Chrome.** A ruled masthead: wordmark, the stadium name, nav, and a yellow
-"Share a photo" action. There is no site footer. The chrome is identical on every
-page so the site reads as one product.
+"Share a photo" action. Below `sm` the nav and the action collapse into a
+hamburger that opens a ruled panel under the header. There is no site footer.
+The chrome is identical on every page so the site reads as one product.
 
 **Home, one viewport.** Nothing on the home page scrolls. The shell is capped to
 the viewport and the parts are laid out to fit:
 
-1. A node bar: Level 1/2/3 nodes (with their photographed counts), the Section
-   find field, and the coverage count, under a yellow progress rule.
-2. A stage on the left: the Section's photo at the size it deserves, a thumbnail
-   strip when there is more than one, and a caption bar (Section, Level, count,
-   date).
+1. A node bar: Level 1/2/3 nodes with their photographed counts, and — once a
+   Section is chosen — the Section find field.
+2. A stage on the left. Before a Section is chosen it holds the hero: the title
+   at display size, a yellow rule, a supporting line, and the find field. After
+   that it is the Section's photo at the size it deserves, a thumbnail strip when
+   there is more than one, and a caption bar (Section, Level, count, date). The
+   top-bar find field stays hidden until then, so there is one search control.
 3. A rail on the right holding, in order: the seat map (always visible, never
-   scrolled to), a Section / Level / Photos readout, prev/next Section, and the
-   Level's Section list which scrolls inside itself.
+   scrolled to), then — once a Section is chosen — a Section / Level / Photos
+   readout, prev/next Section, and the Level's Section list which scrolls inside
+   itself.
 
 Below the `lg` breakpoint the stage and rail stack, the Section list steps aside,
-and the map, readout and jump stay visible without scrolling.
+and the map, readout and jump stay visible without scrolling. On a first visit
+the hero sizes to its copy and the map takes the rest of the viewport, rather
+than the hero stretching into empty ground.
 
 **Section page.** A `Section 201A-B` heading with a yellow rule, a frame of
 neighbour links, and the photos at `aspect-4/3` with their captions. Every
@@ -105,8 +111,9 @@ form. **404** sits on the same page gutter as every other page.
 - **States**: hover (rows, nodes, controls brighten toward the accent), focus
   (`:focus-visible` yellow ring, including SVG Sections), disabled, loading
   (upload progress), error (the find field turns `--destructive` and names the
-  problem and the recovery), and empty (no photo for a Section offers
-  "Share a photo" with that Section prefilled).
+  problem and the recovery), and empty. The home's first-visit empty state is
+  the hero with its find field; a Section with no photo offers "Share a photo"
+  with that Section prefilled.
 
 ## Motion
 
@@ -139,7 +146,8 @@ in the design.
 
 ## Open questions
 
-- `PRODUCT.md` says 104 Sections; the seat plan and sitemap hold 103. The home now
-  shows that count prominently, so the two should be reconciled.
+- `PRODUCT.md` says 104 Sections; the seat plan and sitemap hold 103. The home no
+  longer surfaces the count, so the two are a documentation divergence rather
+  than a visible one, but they should still be reconciled.
 - The mobile home deliberately omits the Section list to keep the viewport. If the
   list is worth having on a phone, it needs a different treatment, not a scroll.
