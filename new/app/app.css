@@ -447,7 +447,11 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .home-jump button {
+  display: flex;
   flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
   border: 0;
   background: transparent;
   padding: 0.55rem;
