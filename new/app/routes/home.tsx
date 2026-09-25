@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 
 import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -109,12 +109,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   const matched = sectionIds.find((id) => sectionSlug(id) === slug) ?? null;
 
   // The prerendered HTML never has a Section selected, because a static host
-  // cannot build every ?section= variant. Selection is applied after hydration,
-  // and a visit with no Section starts on the first one that has a photo.
+  // cannot build every ?section= variant. Selection is applied after hydration.
+  // A visit with no Section keeps the hero rather than guessing one, so the fan
+  // starts from their own ticket number.
   const photographed = new Set(loaderData.populatedSections);
-  const firstPhotographed =
-    sectionIds.find((id) => photographed.has(id)) ?? null;
-  const selected = hydrated ? (matched ?? firstPhotographed) : null;
+  const selected = hydrated ? matched : null;
 
   const photos = selected ? (loaderData.photosBySection[selected] ?? []) : [];
 
@@ -134,9 +133,6 @@ export default function Home({ loaderData }: Route.ComponentProps) {
   useSectionKeyboard({ selected, onSelect: selectSection });
 
   const level = selected ? sectionLevel(selected) : 2;
-  const coverage = Math.round(
-    (loaderData.populatedSections.length / sectionIds.length) * 100,
-  );
   const onLevel = sectionOrder(
     sectionIds.filter((id) => sectionLevel(id) === level),
   );
@@ -157,7 +153,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             key={n}
             type="button"
             className="home-node"
-            data-on={level === n ? "" : undefined}
+            data-on={selected !== null && level === n ? "" : undefined}
             onClick={() => {
               const first =
                 sectionIds.find(
@@ -176,27 +172,22 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           </button>
         ))}
 
-        <FindSection onSelect={selectSection} />
-
-        <span className="home-cov">
-          <b>{loaderData.populatedSections.length}</b> / {sectionIds.length}{" "}
-          Sections photographed
-        </span>
-      </div>
-
-      <div className="home-rule" aria-hidden>
-        <span style={{ width: `${coverage}%` }} />
+        {selected && <FindSection onSelect={selectSection} />}
       </div>
 
       <div className="home-body">
         <section className="home-stage">
-          <div className="home-photo">
-            {selected && photos[0] ? (
-              <SectionPhoto key={selected} section={selected} photos={photos} />
-            ) : (
-              <div className="home-nophoto">
-                {selected ? (
-                  <>
+          {selected ? (
+            <>
+              <div className="home-photo">
+                {photos[0] ? (
+                  <SectionPhoto
+                    key={selected}
+                    section={selected}
+                    photos={photos}
+                  />
+                ) : (
+                  <div className="home-nophoto">
                     <p>No photo for Section {selected} yet.</p>
                     <p className="text-sm">
                       If you have one, it would help the next person decide.{" "}
@@ -207,24 +198,23 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                         Share a photo
                       </Link>
                     </p>
-                  </>
-                ) : (
-                  <p>
-                    Pick a Section on the bowl, or type its number, to see the
-                    view from it.
-                  </p>
+                  </div>
                 )}
               </div>
-            )}
-          </div>
-          <div className="home-cap">
-            <b>Section {selected ?? "—"}</b>
-            <span>Level {selected ? sectionLevel(selected) : "—"}</span>
-            <span>
-              {photos.length} photo{photos.length === 1 ? "" : "s"}
-            </span>
-            <span className="home-date">{photos[0]?.date ?? "undated"}</span>
-          </div>
+              <div className="home-cap">
+                <b>Section {selected}</b>
+                <span>Level {sectionLevel(selected)}</span>
+                <span>
+                  {photos.length} photo{photos.length === 1 ? "" : "s"}
+                </span>
+                <span className="home-date">
+                  {photos[0]?.date ?? "undated"}
+                </span>
+              </div>
+            </>
+          ) : (
+            <HomeHero onSelect={selectSection} />
+          )}
         </section>
 
         <aside className="home-rail">
@@ -236,20 +226,22 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             />
           </div>
 
-          <div className="home-readout">
-            <div>
-              <span>Section</span>
-              <b>{selected ?? "—"}</b>
+          {selected && (
+            <div className="home-readout">
+              <div>
+                <span>Section</span>
+                <b>{selected}</b>
+              </div>
+              <div>
+                <span>Level</span>
+                <b>{sectionLevel(selected)}</b>
+              </div>
+              <div>
+                <span>Photos</span>
+                <b>{photos.length}</b>
+              </div>
             </div>
-            <div>
-              <span>Level</span>
-              <b>{selected ? sectionLevel(selected) : "—"}</b>
-            </div>
-            <div>
-              <span>Photos</span>
-              <b>{photos.length}</b>
-            </div>
-          </div>
+          )}
 
           {selected && (
             <div className="home-jump">
@@ -357,46 +349,100 @@ function SectionPhoto({
   );
 }
 
-function FindSection({ onSelect }: { onSelect: (section: string) => void }) {
+function useSectionSearch(onSelect: (section: string) => void) {
   const [value, setValue] = useState("");
   const [invalid, setInvalid] = useState(false);
 
+  return {
+    value,
+    invalid,
+    onChange(event: ChangeEvent<HTMLInputElement>) {
+      setValue(event.target.value);
+      setInvalid(false);
+    },
+    onSubmit(event: FormEvent<HTMLFormElement>) {
+      event.preventDefault();
+
+      const found = findSectionByQuery(value, sectionIds);
+      if (!found) {
+        setInvalid(true);
+        return;
+      }
+
+      setValue("");
+      setInvalid(false);
+      onSelect(found);
+    },
+  };
+}
+
+function FindSection({ onSelect }: { onSelect: (section: string) => void }) {
+  const search = useSectionSearch(onSelect);
+
   return (
-    <form
-      className="home-find"
-      onSubmit={(event) => {
-        event.preventDefault();
-
-        const found = findSectionByQuery(value, sectionIds);
-        if (!found) {
-          setInvalid(true);
-          return;
-        }
-
-        setValue("");
-        setInvalid(false);
-        onSelect(found);
-      }}
-    >
+    <form className="home-find" onSubmit={search.onSubmit}>
       <input
-        value={value}
+        value={search.value}
         placeholder="Find your Section — 201A-B"
         aria-label="Find your Section"
-        aria-invalid={invalid}
-        aria-describedby={invalid ? "home-find-error" : undefined}
-        data-invalid={invalid ? "" : undefined}
-        onChange={(event) => {
-          setValue(event.target.value);
-          setInvalid(false);
-        }}
+        aria-invalid={search.invalid}
+        aria-describedby={search.invalid ? "home-find-error" : undefined}
+        data-invalid={search.invalid ? "" : undefined}
+        onChange={search.onChange}
       />
       <button type="submit">Find</button>
-      {invalid && (
+      {search.invalid && (
         <span id="home-find-error" role="alert" className="home-error">
           No Section matches that. Check the number on your ticket.
         </span>
       )}
     </form>
+  );
+}
+
+/**
+ * The first visit, before a Section is chosen: the title at display size and the
+ * one job — type a Section number. The top-bar find field stays hidden until
+ * there is a Section, so the page never shows two search controls at once.
+ */
+function HomeHero({ onSelect }: { onSelect: (section: string) => void }) {
+  const search = useSectionSearch(onSelect);
+
+  return (
+    <div className="home-hero">
+      <div className="home-hero-inner">
+        <p className="home-hero-title">See the view from your Section</p>
+        <span className="home-hero-rule" aria-hidden />
+        <p className="home-hero-sub">
+          Fan photos from Stadium Bukit Jalil, before you buy.
+        </p>
+
+        <form className="home-hero-find" onSubmit={search.onSubmit}>
+          <label htmlFor="home-hero-section">Find your Section</label>
+          <div className="home-hero-field">
+            <input
+              id="home-hero-section"
+              value={search.value}
+              placeholder="e.g. 201A-B, 332, 124"
+              aria-invalid={search.invalid}
+              aria-describedby={search.invalid ? "home-hero-error" : undefined}
+              data-invalid={search.invalid ? "" : undefined}
+              onChange={search.onChange}
+            />
+            <button type="submit">Find</button>
+          </div>
+          {search.invalid && (
+            <span
+              id="home-hero-error"
+              role="alert"
+              className="home-error home-error--inline"
+            >
+              No Section matches that. Check the number on your ticket.
+            </span>
+          )}
+        </form>
+      </div>
+    </div>
   );
 }
 

@@ -321,29 +321,9 @@ body {
   font-size: 0.8125rem;
   white-space: nowrap;
 }
-.home-cov {
-  display: flex;
-  align-items: center;
-  border-left: 1px solid var(--border);
-  padding-inline: 1.1rem;
-  font-size: 0.75rem;
-  letter-spacing: 0.02em;
-  color: var(--muted-foreground);
-  white-space: nowrap;
-}
-.home-cov b {
-  margin-right: 0.25rem;
-  color: var(--foreground);
-}
-.home-rule {
-  height: 3px;
-  flex: 0 0 auto;
-  background: var(--border);
-}
-.home-rule span {
-  display: block;
-  height: 100%;
-  background: var(--primary);
+.home-error--inline {
+  position: static;
+  white-space: normal;
 }
 .home-body {
   display: grid;
@@ -380,6 +360,94 @@ body {
   text-align: center;
   color: var(--muted-foreground);
   font-size: 0.9rem;
+}
+/* First visit, before a Section is chosen: the title and the one search field
+   that top-bar find stays hidden for. */
+.home-hero {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  justify-content: center;
+  overflow: auto;
+  background: var(--background);
+  padding: clamp(1.5rem, 5vw, 4rem);
+}
+.home-hero-inner {
+  display: flex;
+  width: 100%;
+  max-width: 44rem;
+  flex-direction: column;
+  gap: 1rem;
+}
+.home-hero-title {
+  max-width: 30ch;
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.home-hero-rule {
+  height: 3px;
+  width: 4rem;
+  background: var(--primary);
+}
+.home-hero-sub {
+  max-width: 54ch;
+  color: var(--muted-foreground);
+}
+.home-hero-find {
+  display: flex;
+  max-width: 38rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.home-hero-find label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.home-hero-field {
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  background: var(--background);
+}
+.home-hero-field:focus-within {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.home-hero-field:has(input[data-invalid]) {
+  border-color: var(--destructive);
+  outline-color: var(--destructive);
+}
+.home-hero-field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 0.7rem 0.9rem;
+  color: var(--foreground);
+  font: inherit;
+}
+.home-hero-field input::placeholder {
+  color: var(--muted-foreground);
+}
+.home-hero-field button {
+  border: 0;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0 1.25rem;
+  font: inherit;
+  font-weight: 600;
+  transition: background-color 150ms ease-out;
+}
+.home-hero-field button:hover {
+  background: #ffe14d;
 }
 .home-cap {
   display: flex;
@@ -512,6 +580,22 @@ body {
     grid-template-columns: 1fr;
     grid-template-rows: minmax(0, 1fr) auto;
   }
+  /* First visit on a phone: the hero sizes to its copy and the map takes the
+     rest, instead of the hero stretching into empty black. */
+  .home-body:has(.home-hero) {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .home-body:has(.home-hero) .home-map {
+    flex: 1;
+    height: auto;
+  }
+  .home-hero {
+    justify-content: flex-start;
+    padding: 1.5rem 1.25rem 1.75rem;
+  }
+  .home-hero-inner {
+    gap: 0.85rem;
+  }
   .home-rail {
     border-left: 0;
     border-top: 1px solid var(--border);
@@ -522,7 +606,6 @@ body {
   .home-list {
     display: none;
   }
-  .home-cov,
   .home-node em {
     display: none;
   }
