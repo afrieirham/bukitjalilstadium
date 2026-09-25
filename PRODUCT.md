@@ -86,11 +86,9 @@ each one accountable and attributed.
   formal and alternate names (TM Stadium Nasional, Stadium Nasional Bukit Jalil,
   Bukit Jalil National Stadium) are part of how the site is found and should be
   preserved.
-- Voice: plain, fan-to-fan, no marketing gloss. "Seat views shared by fans, for
-  fans."
-- Built by Afrie Irham, credited in the footer with a link to afrieirham.com.
-- The predecessor's "Built by @afrieirham" credit and the original logo are the
-  identity the product carries forward.
+- Voice: plain, fan-to-fan, no marketing gloss.
+- The original logo is the identity the product carries forward. There is no
+  site footer and no author credit in the UI.
 
 ## Evidence on Hand
 

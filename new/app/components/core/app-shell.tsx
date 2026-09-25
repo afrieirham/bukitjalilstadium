@@ -56,31 +56,10 @@ function SiteHeader() {
   );
 }
 
-function SiteFooter() {
-  return (
-    <footer className="border-border mt-auto border-t">
-      <div className="text-muted-foreground mx-auto flex max-w-[1400px] flex-col gap-2 px-4 py-5 text-sm sm:flex-row sm:items-center sm:justify-between">
-        <p>Seat views shared by fans, for fans.</p>
-        <p>
-          Built by{" "}
-          <a
-            href="https://afrieirham.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-foreground underline-offset-4 hover:underline"
-          >
-            Afrie Irham
-          </a>
-        </p>
-      </div>
-    </footer>
-  );
-}
-
 /**
  * The chrome every page shares, so the site reads as one product rather than
  * four pages that happen to share a repository. The home fills the viewport
- * between header and footer, so the shell is a full-height column.
+ * between header and page footer, so the shell is a full-height column.
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
@@ -98,7 +77,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     >
       <SiteHeader />
       <div className="flex min-h-0 flex-1 flex-col">{children}</div>
-      <SiteFooter />
     </div>
   );
 }

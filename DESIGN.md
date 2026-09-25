@@ -70,8 +70,8 @@ held to `max-w-prose` (65ch). No gradient text; emphasis is weight and size.
 ## Composition
 
 **Chrome.** A ruled masthead: wordmark, the stadium name, nav, and a yellow
-"Share a photo" action. One shared footer carries the voice line and the credit.
-The chrome is identical on every page so the site reads as one product.
+"Share a photo" action. There is no site footer. The chrome is identical on every
+page so the site reads as one product.
 
 **Home, one viewport.** Nothing on the home page scrolls. The shell is capped to
 the viewport and the parts are laid out to fit:
