@@ -75,8 +75,11 @@ export default function Section({ loaderData }: Route.ComponentProps) {
       </Link>
 
       <header className="flex flex-col gap-3">
-        <h1 className="text-2xl font-semibold">{title}</h1>
-        <p className="text-muted-foreground">{description}</p>
+        <h1 className="text-3xl font-semibold tracking-tight text-balance">
+          Section {section}
+        </h1>
+        <div className="bg-primary h-[3px] w-16" aria-hidden />
+        <p className="text-muted-foreground max-w-prose">{description}</p>
       </header>
 
       <nav className="flex items-center justify-between gap-4">

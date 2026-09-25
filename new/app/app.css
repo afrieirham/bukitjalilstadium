@@ -57,44 +57,56 @@ body {
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * The Signage world: black ground, white ink, one high-chroma signal yellow.
+ * Drawn from the stadium's own wayfinding signs. Light-only by decision.
+ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.488 0.243 264.376);
-  --primary-foreground: oklch(0.97 0.014 254.604);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.488 0.243 264.376);
-  /* Section fills on the seat plan. A Section somebody has photographed is
-     tinted; one nobody has is left hollow. Tune these two to re-skin the map. */
-  --seat-filled: oklch(0.93 0.03 264);
-  --seat-filled-border: oklch(0.85 0.05 264);
-  --seat-filled-hover: oklch(0.88 0.06 264);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.546 0.245 262.881);
-  --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.488 0.243 264.376);
+  color-scheme: dark;
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --card: #111111;
+  --card-foreground: #ffffff;
+  --popover: #111111;
+  --popover-foreground: #ffffff;
+  --primary: #ffd400;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1a;
+  --muted-foreground: #b3b3b3;
+  --accent: #1a1a1a;
+  --accent-foreground: #ffffff;
+  --destructive: #ff6b6b;
+  --border: #2c2c2c;
+  --input: #666666;
+  --ring: #ffd400;
+  --radius: 0.5rem;
+
+  /* Section fills on the seat plan, in the sign's own colours.
+     Photographed Sections are yellow, the selected one is solid white so it
+     cannot be mistaken for a photographed one, and the rest stay hollow. */
+  --seat-filled: #ffd400;
+  --seat-filled-border: #c9a800;
+  --seat-filled-hover: #ffe14d;
+  --seat-empty: #0a0a0a;
+  --seat-empty-border: #666666;
+  --seat-selected: #ffffff;
+  --seat-selected-foreground: #0a0a0a;
+
+  --chart-1: #ffd400;
+  --chart-2: #ffe14d;
+  --chart-3: #c9a800;
+  --chart-4: #8a7200;
+  --chart-5: #4d4000;
+  --sidebar: #111111;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffd400;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #2c2c2c;
+  --sidebar-ring: #ffd400;
 }
 
 @layer base {
@@ -103,6 +115,8 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "cv05" 1, "ss03" 1;
+    font-variant-numeric: tabular-nums;
   }
   button:not(:disabled),
   [role="button"]:not(:disabled) {
@@ -111,6 +125,54 @@ body {
   html {
     @apply font-sans;
   }
+
+  /* Browser surfaces carry the palette too. */
+  input,
+  textarea,
+  select {
+    caret-color: var(--primary);
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 30%, transparent);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #333333 transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #333333;
+    border-radius: 6px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4d4d4d;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* The home photo changes with the Section: one authored entrance. */
+@keyframes home-shot-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.home-photo .home-shot {
+  animation: home-shot-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-photo .home-shot {
+    animation: none;
+  }
 }
 
 /* The standing area and the LRT marker: interactive, but not Sections. */
@@ -118,12 +180,7 @@ body {
   @apply fill-card stroke-border stroke-2 hover:fill-primary/15 hover:stroke-primary active:cursor-move;
 }
 
-/* A Section on the seat plan.
-   Filled means somebody has photographed it, hollow means nobody has yet, solid
-   accent means it is the Section you selected. The selected fill is solid
-   rather than a tint so it cannot be mistaken for a photographed one, and the
-   state survives greyscale because the label inverts to the accent's
-   foreground and the stroke thickens. */
+/* A Section on the seat plan. */
 .seat-section {
   fill: var(--seat-filled);
   stroke: var(--seat-filled-border);
@@ -136,27 +193,344 @@ body {
 
 .seat-section:hover {
   fill: var(--seat-filled-hover);
-  stroke: var(--primary);
+  stroke: var(--seat-selected);
 }
 
 .seat-section[data-empty="true"] {
-  fill: var(--card);
-  stroke: var(--border);
+  fill: var(--seat-empty);
+  stroke: var(--seat-empty-border);
   stroke-width: 1.5;
 }
 
 .seat-section[data-empty="true"]:hover {
-  fill: color-mix(in oklab, var(--primary) 10%, transparent);
-  stroke: var(--primary);
+  fill: color-mix(in oklab, var(--primary) 18%, transparent);
+  stroke: var(--seat-selected);
 }
 
 .seat-section[data-selected="true"] {
-  fill: var(--primary);
-  stroke: var(--primary);
+  fill: var(--seat-selected);
+  stroke: var(--seat-selected);
   stroke-width: 3;
 }
 
 .seat-section[data-selected="true"] + text {
-  fill: var(--primary-foreground);
+  fill: var(--seat-selected-foreground);
   font-weight: 600;
+}
+
+.seat-section:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+/* ---------------------------------------------------------------- Home */
+/* One viewport, nothing scrolls on the page; the Section list scrolls
+   inside its own rail. The seat map is always visible. */
+
+.home {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+}
+.home-nodes {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: stretch;
+  border-block: 1px solid var(--border);
+  background: var(--card);
+}
+.home-node {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  border: 0;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  padding: 0.5rem 1.1rem;
+  text-align: left;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  transition:
+    color 150ms ease-out,
+    background-color 150ms ease-out;
+}
+.home-node:hover {
+  background: color-mix(in oklab, var(--primary) 9%, transparent);
+  color: var(--foreground);
+}
+.home-node em {
+  font-style: normal;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  opacity: 0.75;
+}
+.home-node[data-on] {
+  color: var(--primary);
+  font-weight: 600;
+}
+.home-find {
+  position: relative;
+  display: flex;
+  margin-left: auto;
+  border-left: 1px solid var(--border);
+}
+.home-find input {
+  width: 16rem;
+  border: 0;
+  background: transparent;
+  padding: 0.5rem 0.9rem;
+  color: var(--foreground);
+  font: inherit;
+}
+.home-find input::placeholder {
+  color: var(--muted-foreground);
+}
+.home-find input:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+.home-find input[data-invalid] {
+  outline: 2px solid var(--destructive);
+  outline-offset: -2px;
+}
+.home-find button {
+  border: 0;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.5rem 1.1rem;
+  font: inherit;
+  font-weight: 600;
+  transition: background-color 150ms ease-out;
+}
+.home-find button:hover {
+  background: #ffe14d;
+}
+.home-error {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 5;
+  border: 1px solid var(--destructive);
+  background: var(--card);
+  padding: 0.35rem 0.6rem;
+  color: var(--destructive);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+.home-cov {
+  display: flex;
+  align-items: center;
+  border-left: 1px solid var(--border);
+  padding-inline: 1.1rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+.home-cov b {
+  margin-right: 0.25rem;
+  color: var(--foreground);
+}
+.home-rule {
+  height: 3px;
+  flex: 0 0 auto;
+  background: var(--border);
+}
+.home-rule span {
+  display: block;
+  height: 100%;
+  background: var(--primary);
+}
+.home-body {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr) 23rem;
+}
+.home-stage {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  background: var(--card);
+}
+.home-photo {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--background);
+}
+.home-photo .home-shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.home-nophoto {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
+.home-cap {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: baseline;
+  gap: 1rem;
+  border-top: 1px solid var(--border);
+  padding: 0.6rem 1.1rem;
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+.home-cap b {
+  color: var(--foreground);
+  font-weight: 600;
+}
+.home-cap .home-date {
+  margin-left: auto;
+}
+.home-rail {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  border-left: 1px solid var(--border);
+  background: var(--card);
+}
+.home-map {
+  display: flex;
+  flex: 0 0 auto;
+  height: clamp(150px, 27vh, 250px);
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem;
+}
+.home-map svg {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+}
+.home-readout {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid var(--border);
+}
+.home-readout > div {
+  border-right: 1px solid var(--border);
+  padding: 0.5rem 0.9rem;
+}
+.home-readout > div:last-child {
+  border-right: 0;
+}
+.home-readout span {
+  display: block;
+  font-size: 0.6875rem;
+  letter-spacing: 0.01em;
+  color: var(--muted-foreground);
+}
+.home-readout b {
+  font-size: 0.95rem;
+}
+.home-jump {
+  display: flex;
+  flex: 0 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+.home-jump button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  padding: 0.55rem;
+  color: var(--foreground);
+  font: inherit;
+}
+.home-jump button + button {
+  border-left: 1px solid var(--border);
+}
+.home-jump button:hover {
+  background: color-mix(in oklab, var(--primary) 12%, transparent);
+}
+.home-list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.home-row {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 3.4rem 1fr auto;
+  gap: 0.5rem;
+  align-items: baseline;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  padding: 0.34rem 0.9rem;
+  text-align: left;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: background-color 120ms ease-out;
+}
+.home-row b {
+  color: var(--foreground);
+}
+.home-row:hover {
+  background: color-mix(in oklab, var(--primary) 9%, transparent);
+}
+.home-row:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+.home-row[data-on] {
+  background: color-mix(in oklab, var(--primary) 14%, transparent);
+  color: var(--primary);
+}
+.home-row[data-on] b {
+  color: var(--primary);
+}
+
+@media (max-width: 1023px) {
+  .home-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .home-rail {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+  .home-map {
+    height: clamp(120px, 22vh, 180px);
+  }
+  .home-list {
+    display: none;
+  }
+  .home-cov,
+  .home-node em {
+    display: none;
+  }
+  .home-node {
+    padding: 0.5rem 0.7rem;
+  }
+  .home-find {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .home-find input {
+    width: 100%;
+    min-width: 0;
+  }
 }

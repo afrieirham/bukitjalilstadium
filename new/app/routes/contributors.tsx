@@ -34,7 +34,7 @@ export default function Contributors({ loaderData }: Route.ComponentProps) {
     <PageContainer className="flex max-w-3xl flex-col gap-6">
       <header className="flex flex-col gap-3">
         <h1 className="text-2xl font-semibold">Contributors</h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground max-w-prose">
           Every view on this site was shared by a fan. These are the people who
           made it useful.
         </p>
