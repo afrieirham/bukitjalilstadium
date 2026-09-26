@@ -132,10 +132,13 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   useSectionKeyboard({ selected, onSelect: selectSection });
 
-  const level = selected ? sectionLevel(selected) : 2;
-  const onLevel = sectionOrder(
-    sectionIds.filter((id) => sectionLevel(id) === level),
-  );
+  // The Level's Section list is part of the readout that appears once a
+  // Section is chosen, so there is no Level to list before then.
+  const onLevel = selected
+    ? sectionOrder(
+        sectionIds.filter((id) => sectionLevel(id) === sectionLevel(selected)),
+      )
+    : [];
 
   return (
     <div className="home">
@@ -153,7 +156,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             key={n}
             type="button"
             className="home-node"
-            data-on={selected !== null && level === n ? "" : undefined}
+            data-on={
+              selected !== null && sectionLevel(selected) === n ? "" : undefined
+            }
             onClick={() => {
               const first =
                 sectionIds.find(
@@ -268,23 +273,25 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </div>
           )}
 
-          <ol className="home-list">
-            {onLevel.map((id) => (
-              <li key={id}>
-                <button
-                  type="button"
-                  className="home-row"
-                  data-on={id === selected ? "" : undefined}
-                  style={{ opacity: photographed.has(id) ? 1 : 0.7 }}
-                  onClick={() => selectSection(id)}
-                >
-                  <b>{id}</b>
-                  <span>Level {sectionLevel(id)}</span>
-                  <span>{loaderData.counts[id] ?? 0} ph.</span>
-                </button>
-              </li>
-            ))}
-          </ol>
+          {selected && (
+            <ol className="home-list">
+              {onLevel.map((id) => (
+                <li key={id}>
+                  <button
+                    type="button"
+                    className="home-row"
+                    data-on={id === selected ? "" : undefined}
+                    style={{ opacity: photographed.has(id) ? 1 : 0.7 }}
+                    onClick={() => selectSection(id)}
+                  >
+                    <b>{id}</b>
+                    <span>Level {sectionLevel(id)}</span>
+                    <span>{loaderData.counts[id] ?? 0} ph.</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          )}
         </aside>
       </div>
     </div>
