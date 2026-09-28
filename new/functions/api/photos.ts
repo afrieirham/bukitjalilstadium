@@ -53,9 +53,13 @@ export const onRequestPost = async ({
   }
 
   const key = `pending/${crypto.randomUUID()}.${format === "jpeg" ? "jpg" : "png"}`;
+  // The photo stays unwatermarked until it is published (ADR 0005), so it must
+  // not be cached at the edge while it waits; the CI job that watermarks it
+  // writes an immutable cache onto the finished object.
   await env.BUCKET.put(key, stripLocationMetadata(bytes, format), {
     httpMetadata: {
       contentType: format === "jpeg" ? "image/jpeg" : "image/png",
+      cacheControl: "no-store",
     },
   });
 
