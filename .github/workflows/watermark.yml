@@ -1,0 +1,58 @@
+name: Watermark photos
+
+# Publish-time watermarking (ADR 0005). A merge to main is what publishes a
+# Contribution, so it is also where the new photos get their mark. Only the
+# photo keys this push added or changed are considered, which is what keeps
+# legacy `seats/*` photos out of it.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "new/data/contributions/**"
+
+concurrency:
+  group: watermark-photos
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  watermark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: new/tools/watermark/package-lock.json
+
+      - name: Collect the Contribution files this push added or changed
+        id: changed
+        run: |
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            : > changed.txt
+          else
+            git diff --name-only --diff-filter=AM \
+              "${{ github.event.before }}" "${{ github.sha }}" \
+              -- new/data/contributions | grep -E '\.json$' > changed.txt || true
+          fi
+          echo "count=$(wc -l < changed.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
+
+      - name: Install the watermark tool
+        if: steps.changed.outputs.count != '0'
+        working-directory: new/tools/watermark
+        run: npm ci
+
+      - name: Watermark new photos
+        if: steps.changed.outputs.count != '0'
+        env:
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: node new/tools/watermark/watermark.mjs changed.txt
