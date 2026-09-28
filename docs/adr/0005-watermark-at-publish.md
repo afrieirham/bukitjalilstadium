@@ -6,13 +6,18 @@ Contribution photo, so a copy carries the source and scraping the set cleanly is
 not worth the effort. The mark is applied by a GitHub Action after a
 Contribution merges — the moment the photo is actually published — and written
 back to the same R2 key, so neither the Contribution JSON nor the photo URL
-changes.
+changes. Before the overwrite, the unwatermarked photo is copied into a second,
+private bucket, so a pristine master survives.
 
 It is applied to new photos only. The roughly hundred legacy photos already
 carry the predecessor's centred mark and are left exactly as they are.
 
 ## Considered Options
 
+- **R2 object versioning.** The obvious answer, but R2 does not have it:
+  `PutBucketVersioning` and `GetBucketVersioning` are unimplemented in its S3
+  API. So the original is preserved by copying it to a private bucket before the
+  in-place overwrite.
 - **Request-path watermark in the Pages Function** (`wasm-vips` or a JS codec).
   Enforced at the source whatever the client does, but a decode, composite and
   re-encode of a 10 MB photo will not fit the free Workers CPU budget — the same
@@ -33,8 +38,13 @@ carry the predecessor's centred mark and are left exactly as they are.
 ## Consequences
 
 - The write path needs an R2 S3 token as repository secrets (`R2_ACCOUNT_ID`,
-  `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`), separate from the
-  Worker's R2 binding.
+  `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`,
+  `R2_ORIGINALS_BUCKET`), separate from the Worker's R2 binding. The token must
+  cover both buckets.
+- The pristine original is kept in a second, private bucket under the same key,
+  copied before the overwrite. It is deliberately not public: the photos bucket
+  is served from `storage.bukitjalilstadium.com`, so an archive there would
+  leak a clean copy to anyone who saw the pending UUID.
 - The unwatermarked photo is public-but-unguessable from upload until the merge,
   which is the same window in which the reviewer sees it. The pending object is
   written with `Cache-Control: no-store` so that no edge caches the unmarked
