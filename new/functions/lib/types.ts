@@ -15,7 +15,7 @@ export interface PhotoBucket {
   put(
     key: string,
     value: Uint8Array,
-    options?: { httpMetadata?: { contentType?: string } },
+    options?: { httpMetadata?: { contentType?: string; cacheControl?: string } },
   ): Promise<unknown>;
   head(key: string): Promise<unknown>;
   list(options: {

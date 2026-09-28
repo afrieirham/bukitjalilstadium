@@ -64,6 +64,11 @@ held to `max-w-prose` (65ch). No gradient text; emphasis is weight and size.
   and the contributor list are ruled rows, not cards.
 - **Photos are never filtered.** No grayscale, duotone, or blend mode touches an
   image, anywhere in the app.
+- **New photos are watermarked once, at publish.** Every Contribution merged
+  after ADR 0005 carries a `BUKITJALILSTADIUM.COM` wordmark tiled diagonally in
+  `--primary` at 10% opacity. It is the one thing ever drawn onto a photo, and it
+  is a composite, not a filter — nothing is grayscale, duotone, or blended.
+  Legacy photos keep the predecessor's centred mark and are not retouched.
 - No gradient text, glass/blur ornament, coloured side borders, hard offset
   shadows, or texture gradients. All are outside this world.
 
@@ -140,8 +145,9 @@ token focus rings, and tabular numerals set on `body`.
 `public/logo.png`, `public/og.png`, and `public/favicon.ico` are the existing
 brand rasters and were not regenerated; the logo is the axonometric stadium
 illustration and is carried forward unchanged. All seat photographs are
-contributor-supplied and shown as-is, from
-`https://storage.bukitjalilstadium.com`. There are no generated or stock images
+contributor-supplied, from `https://storage.bukitjalilstadium.com`: the legacy
+photos are shown as-is with their predecessor mark, and new ones carry the
+publish-time tile watermark (ADR 0005). There are no generated or stock images
 in the design.
 
 ## Open questions
