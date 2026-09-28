@@ -2,21 +2,23 @@
  * Publish-time watermarking for new Contribution photos (ADR 0005).
  *
  * Runs in CI, after a Contribution is merged, against the photos that push
- * added or changed. Each photo is downloaded from R2, composited with the
- * tiled wordmark, and written back to the same key with a marker in its object
- * metadata — so the URL and the Contribution JSON do not change, and a re-run
- * is a no-op. Legacy `seats/*` photos are never touched; the plan module
- * filters them out.
+ * added or changed. Each photo is copied into the private originals bucket,
+ * then downloaded from R2, composited with the tiled wordmark, and written back
+ * to the same key with a marker in its object metadata — so the URL and the
+ * Contribution JSON do not change, a pristine master survives, and a re-run is
+ * a no-op. Legacy `seats/*` photos are never touched; the plan module filters
+ * them out.
  *
  * Usage: node watermark.mjs <file-list>   (one changed JSON path per line)
  *
  * Required environment: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID,
- * R2_SECRET_ACCESS_KEY, R2_BUCKET.
+ * R2_SECRET_ACCESS_KEY, R2_BUCKET, R2_ORIGINALS_BUCKET.
  */
 
 import { readFileSync } from "node:fs";
 
 import {
+  CopyObjectCommand,
   GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
@@ -96,6 +98,10 @@ console.log(`watermark: ${todo.length - failed}/${todo.length} done`);
 if (failed > 0) process.exitCode = 1;
 
 async function watermark(key) {
+  // Archive the pristine copy first. If this fails, the photo is left untouched
+  // rather than overwritten, so the original is never lost.
+  await archive(key);
+
   const object = await client.send(
     new GetObjectCommand({ Bucket: env.bucket, Key: key }),
   );
@@ -120,6 +126,31 @@ async function watermark(key) {
       ContentType: png ? "image/png" : "image/jpeg",
       CacheControl: IMMUTABLE,
       Metadata: { [WATERMARKED_METADATA_KEY]: WATERMARKED_METADATA_VALUE },
+    }),
+  );
+}
+
+/**
+ * Copies the unwatermarked object into the private originals bucket under the
+ * same key, so a pristine master survives the in-place overwrite. R2 has no
+ * object versioning, so this is how the original is kept. Skips the copy if the
+ * master is already there, which keeps a re-run cheap.
+ */
+async function archive(key) {
+  try {
+    await client.send(
+      new HeadObjectCommand({ Bucket: env.originalsBucket, Key: key }),
+    );
+    return;
+  } catch (error) {
+    if (error?.$metadata?.httpStatusCode !== 404) throw error;
+  }
+
+  await client.send(
+    new CopyObjectCommand({
+      Bucket: env.originalsBucket,
+      Key: key,
+      CopySource: `${env.bucket}/${key}`,
     }),
   );
 }
@@ -165,6 +196,7 @@ function requireEnv() {
     "R2_ACCESS_KEY_ID",
     "R2_SECRET_ACCESS_KEY",
     "R2_BUCKET",
+    "R2_ORIGINALS_BUCKET",
   ];
   const missing = names.filter((name) => !process.env[name]);
 
@@ -178,5 +210,6 @@ function requireEnv() {
     accessKeyId: process.env.R2_ACCESS_KEY_ID,
     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
     bucket: process.env.R2_BUCKET,
+    originalsBucket: process.env.R2_ORIGINALS_BUCKET,
   };
 }
